@@ -1,10 +1,9 @@
 import { Link, Navigate } from 'react-router-dom';
 import { RestaurantContext } from '../context/restaurantContext';
-import { useContext, useState } from 'react';
+import { useContext } from 'react';
 
 const Navbar = () => {
     const { isAuthenticated, setIsAuthenticated } = useContext(RestaurantContext);
-    const [redirect, setRedirect] = useState(false)
 
     const userType = localStorage.getItem("usertype");
 
@@ -12,11 +11,6 @@ const Navbar = () => {
         localStorage.removeItem('token');
         localStorage.removeItem('usertype');
         setIsAuthenticated(false)
-        setRedirect(true)
-    }
-
-    if (redirect) {
-        return <Navigate to='/login' />
     }
 
     return (

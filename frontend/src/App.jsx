@@ -6,10 +6,11 @@ import { useContext, useEffect } from "react";
 import { RestaurantContext } from "./context/restaurantContext.jsx";
 import Home from "./pages/Home.jsx";
 import RestaurantMenu from "./pages/RestaurantMenu.jsx";
+import HomeGuest from "./pages/HomeGuest.jsx";
 
 function App() {
 
-  const { setIsAuthenticated } = useContext(RestaurantContext);
+  const { isAuthenticated, setIsAuthenticated } = useContext(RestaurantContext);
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (token) {
@@ -21,12 +22,15 @@ function App() {
     <>
       <Navbar />
       <Routes>
-        <Route path="/register" element={<Register />} />
-        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={!isAuthenticated ? <Register /> : <Home />} />
+        <Route path="/login" element={!isAuthenticated ? <Login /> : <Home />} />
+        {/* <Route path="/" element={isAuthenticated ? <Home /> : <HomeGuest />} /> */}
+        {/* {isAuthenticated && <> */}
         <Route path="/" element={<Home />} />
         <Route path="/restaurant" element={<RestaurantMenu />}>
           <Route path=":restaurantId" element={<RestaurantMenu />} />
         </Route>
+        {/* </>} */}
       </Routes>
     </>
   )
