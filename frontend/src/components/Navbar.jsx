@@ -1,14 +1,27 @@
-import { Link } from 'react-router-dom';
+import { Link, Navigate } from 'react-router-dom';
 import { RestaurantContext } from '../context/restaurantContext';
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 
 const Navbar = () => {
-    const { isAuthenticated } = useContext(RestaurantContext);
+    const { isAuthenticated, setIsAuthenticated } = useContext(RestaurantContext);
+    const [redirect, setRedirect] = useState(false)
+
     const userType = localStorage.getItem("usertype");
-    console.log("object", isAuthenticated, userType)
+
+    const handleLogout = () => {
+        localStorage.removeItem('token');
+        localStorage.removeItem('usertype');
+        setIsAuthenticated(false)
+        setRedirect(true)
+    }
+
+    if (redirect) {
+        return <Navigate to='/login' />
+    }
+
     return (
-        <nav className="navbar navbar-expand-lg navbar-light bg-light" style={{ width: '85%', margin: '0 auto' }}>
-            <div className="container-fluid">
+        <nav className="navbar navbar-expand-lg bg-light w-100 m-auto" style={{ backdropFilter: "blur(8px)", zIndex: 1050 }}>
+            <div className="container-fluid px-5">
                 <Link className="navbar-brand fw-bold" to="/">
                     🍽️ FoodNest
                 </Link>
@@ -21,7 +34,6 @@ const Navbar = () => {
                     <span className="navbar-toggler-icon"></span>
                 </button>
                 <div className="collapse navbar-collapse" id="navbarNav">
-                    {isAuthenticated}
                     <ul className="navbar-nav ms-auto gap-3">
                         {
                             !isAuthenticated && (
@@ -53,11 +65,14 @@ const Navbar = () => {
                                     <li className="nav-item">
                                         <Link className="nav-link" to="/profile">Profile</Link>
                                     </li>
+                                    <li className="nav-item">
+                                        <button className="nav-link btn btn-link" onClick={handleLogout}>Logout</button>
+                                    </li>
                                 </>
                             )
                         }
                         {
-                            isAuthenticated && userType === 'vendor' && (
+                            isAuthenticated && userType === 'admin' && (
                                 <>
                                     <li className="nav-item">
                                         <Link className="nav-link" to="/restaurant/dashboard">Dashboard</Link>
@@ -70,6 +85,9 @@ const Navbar = () => {
                                     </li>
                                     <li className="nav-item">
                                         <Link className="nav-link" to="/restaurant/profile">Profile</Link>
+                                    </li>
+                                    <li className="nav-item">
+                                        <button className="nav-link btn btn-link" onClick={handleLogout}>Logout</button>
                                     </li>
                                 </>
                             )

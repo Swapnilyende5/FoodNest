@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import { Link, Navigate } from 'react-router-dom'
 import axiosInstance from '../../axiosInstance'
 import { RestaurantContext } from '../context/restaurantContext'
@@ -8,6 +8,7 @@ const Login = () => {
         email: '',
         password: ''
     })
+    const { setIsAuthenticated } = useContext(RestaurantContext);
     const [errorMessage, setErrorMessage] = useState('')
     const [redirect, setRedirect] = useState(false)
 
@@ -25,6 +26,7 @@ const Login = () => {
             })
             localStorage.setItem("token", res.data.token);
             localStorage.setItem("usertype", res.data.user.userType);
+            setIsAuthenticated(true);
             setRedirect(true)
         } catch (error) {
             const errorMsg = error.response?.data?.message || "Login failed. Please try again.";

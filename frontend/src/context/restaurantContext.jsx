@@ -1,4 +1,4 @@
-import { createContext, useState } from "react";
+import { createContext, useMemo, useState } from "react";
 
 
 export const RestaurantContext = createContext(null);
@@ -8,10 +8,10 @@ const RestaurantContextProvider = ({ children }) => {
     const [auth, setAuth] = useState({
         token: ''
     });
+    const [selectedRes, setSelectedRes] = useState({});
 
-    const contextValues = {
-        isAuthenticated, setIsAuthenticated, auth, setAuth
-    }
+    const contextValues = useMemo(() => ({ isAuthenticated, setIsAuthenticated, auth, setAuth, selectedRes, setSelectedRes }), [isAuthenticated, setIsAuthenticated, auth, setAuth, selectedRes, setSelectedRes]);
+
     return (
         <RestaurantContext.Provider value={contextValues}>
             {children}
