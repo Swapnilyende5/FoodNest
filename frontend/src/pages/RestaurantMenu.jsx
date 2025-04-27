@@ -1,8 +1,11 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { RestaurantContext } from '../context/restaurantContext';
+import "./RestaurantMenu.scss"
 
 const RestaurantMenu = () => {
-    const { selectedRes, setSelectedRes } = useContext(RestaurantContext)
+    const { selectedRes, setSelectedRes, setAddFood } = useContext(RestaurantContext)
+    const [filterFood, setFilterFood] = useState('')
+    const [foodList, setFoodList] = useState(selectedRes?.menu || [])
 
     useEffect(() => {
         const storedRestaurant = localStorage.getItem("restaurantMenu");
@@ -11,9 +14,34 @@ const RestaurantMenu = () => {
         }
     }, []);
 
+
+    const handleChange = (e) => {
+        setFilterFood(e.target.value)
+    }
+    useEffect(() => {
+        if (filterFood === '') {
+            setFoodList(selectedRes?.menu)
+        } else {
+            const filteredFood = selectedRes.menu.filter((v) => {
+                return v.title == filterFood
+            })
+            setFoodList(filteredFood.length > 0 ? filteredFood : selectedRes.menu)
+        }
+    }, [filterFood, selectedRes.menu])
+
+
+    const addToCart = (item) => {
+        setAddFood([item])
+    }
+
     return (
-        <div className='w-75 m-auto'>
-            {selectedRes?.menu?.map((item) => {
+        <div className='w-75 m-auto mt-5'>
+            <h2 className='mb-4 fw-bold'>{selectedRes.restaurantName}</h2>
+            <div className='text-center mb-5'>
+                <h6 className='text-muted mb-2'>- Menu -</h6>
+                <input class="search-input w-50" onChange={handleChange} placeholder="Search" />
+            </div>
+            {foodList?.map((item) => {
                 const { description, _id, imageId, title, price, } = item || {}
                 return <>
                     <div className='d-flex my-4' key={_id}>
@@ -28,14 +56,14 @@ const RestaurantMenu = () => {
                                 {description}
                             </p>
                         </div>
-                        <div className="col-md-4 text-center">
+                        <div className="col-md-4 text-center position-relative" style={{ height: '144px' }}>
                             <img
-                                src={`https://media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,w_300,h_300,c_fit/${imageId}`}
+                                src={imageId ? `https://media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,w_300,h_300,c_fit/${imageId}` : '/foodstore-icon.png'}
                                 alt="food"
                                 className="img-fluid rounded mb-2"
                                 style={{ maxHeight: '120px', width: "180px", objectFit: 'cover' }}
                             />
-                            <button className="btn btn-success m-auto d-block w-25">ADD</button>
+                            <button className="btn btn-success m-auto d-block w-25 position-absolute" style={{ right: '126px', bottom: '5px' }} onClick={() => addToCart(item)}>ADD</button>
                         </div>
                     </div>
                     <hr className='m-0' />

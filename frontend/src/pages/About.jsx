@@ -1,11 +1,13 @@
+import './About.scss'
+
 const About = () => {
     return (
         <section id="about" className="py-5">
-            <div className="container px-4">
+            <div className="about-wrapper container px-4 py-5">
                 <div className="mx-auto text-center mb-5" style={{ maxWidth: "768px" }}>
                     <h2 className="fs-1 fw-bold mb-3">Our Story</h2>
                     <p className="text-muted fs-5">
-                        Since 2010, Tasty Bite has been serving exceptional cuisine in a warm and elegant atmosphere.
+                        Since 2010, Food Nest has been serving exceptional cuisine in a warm and elegant atmosphere.
                         Our passion for food and dedication to service excellence makes every visit memorable.
                     </p>
                 </div>

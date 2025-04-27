@@ -29,7 +29,7 @@ const userSchema = new mongoose.Schema({
     },
     profile: {
         type: String,
-        default: "https://img.freepik.com/free-vector/blue-circle-with-white-user_78370-4707.jpg?semt=ais_hybrid&w=740"
+        default: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQIf4R5qPKHPNMyAqV-FjS_OTBB8pfUV29Phg&s"
     },
     answer: {
         type: String,

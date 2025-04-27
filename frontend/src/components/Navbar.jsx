@@ -1,4 +1,4 @@
-import { Link, Navigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { RestaurantContext } from '../context/restaurantContext';
 import { useContext } from 'react';
 
@@ -14,8 +14,8 @@ const Navbar = () => {
     }
 
     return (
-        <nav className="navbar navbar-expand-lg bg-light w-100 m-auto" style={{ backdropFilter: "blur(8px)", zIndex: 1050 }}>
-            <div className="container-fluid px-5">
+        <nav className="navbar navbar-expand-lg w-100 m-auto" style={{ backdropFilter: "blur(8px)", zIndex: 1050 }}>
+            <div className="container px-4">
                 <Link className="navbar-brand fw-bold" to="/">
                     🍽️ FoodNest
                 </Link>
@@ -29,7 +29,7 @@ const Navbar = () => {
                 </button>
                 <div className="collapse navbar-collapse" id="navbarNav">
                     <ul className="navbar-nav ms-auto gap-3">
-                        {
+                        {/* {
                             !isAuthenticated && (
                                 <>
                                     <li className="nav-item">
@@ -43,27 +43,27 @@ const Navbar = () => {
                                     </li>
                                 </>
                             )
-                        }
+                        } */}
                         {
-                            isAuthenticated && userType === 'client' && (
-                                <>
-                                    <li className="nav-item">
-                                        <Link className="nav-link" to="/">Home</Link>
-                                    </li>
-                                    <li className="nav-item">
-                                        <Link className="nav-link" to="/orders">My Orders</Link>
-                                    </li>
-                                    <li className="nav-item">
-                                        <Link className="nav-link" to="/cart">Cart</Link>
-                                    </li>
-                                    <li className="nav-item">
-                                        <Link className="nav-link" to="/profile">Profile</Link>
-                                    </li>
-                                    <li className="nav-item">
-                                        <button className="nav-link btn btn-link" onClick={handleLogout}>Logout</button>
-                                    </li>
-                                </>
-                            )
+                            // isAuthenticated && userType === 'client' && (
+                            <>
+                                <li className="nav-item">
+                                    <Link className="nav-link" to="/">Home</Link>
+                                </li>
+                                <li className="nav-item">
+                                    <Link className="nav-link" to="/orders">My Orders</Link>
+                                </li>
+                                <li className="nav-item">
+                                    <Link className="nav-link" to="/cart">Cart</Link>
+                                </li>
+                                <li className="nav-item">
+                                    <Link className="nav-link" to="/profile">Profile</Link>
+                                </li>
+                                <li className="nav-item">
+                                    <button className="nav-link btn btn-link" onClick={handleLogout}>Logout</button>
+                                </li>
+                            </>
+                            // )
                         }
                         {
                             isAuthenticated && userType === 'admin' && (

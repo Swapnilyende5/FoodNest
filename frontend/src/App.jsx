@@ -7,6 +7,8 @@ import { RestaurantContext } from "./context/restaurantContext.jsx";
 import Home from "./pages/Home.jsx";
 import RestaurantMenu from "./pages/RestaurantMenu.jsx";
 import HomeGuest from "./pages/HomeGuest.jsx";
+import UserProfile from "./pages/UserProfile.jsx";
+import Cart from "./pages/Cart.jsx";
 
 function App() {
 
@@ -30,6 +32,10 @@ function App() {
         <Route path="/restaurant" element={<RestaurantMenu />}>
           <Route path=":restaurantId" element={<RestaurantMenu />} />
         </Route>
+        <Route path="/profile" element={<UserProfile />} />
+        <Route path="/cart" element={<Cart />} />
+        Cart
+
         {/* </>} */}
       </Routes>
     </>

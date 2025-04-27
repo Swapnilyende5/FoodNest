@@ -9,8 +9,10 @@ const RestaurantContextProvider = ({ children }) => {
         token: ''
     });
     const [selectedRes, setSelectedRes] = useState({});
+    const [addFood, setAddFood] = useState([]);
 
-    const contextValues = useMemo(() => ({ isAuthenticated, setIsAuthenticated, auth, setAuth, selectedRes, setSelectedRes }), [isAuthenticated, setIsAuthenticated, auth, setAuth, selectedRes, setSelectedRes]);
+
+    const contextValues = useMemo(() => ({ isAuthenticated, setIsAuthenticated, auth, setAuth, selectedRes, setSelectedRes, addFood, setAddFood }), [isAuthenticated, setIsAuthenticated, auth, setAuth, selectedRes, setSelectedRes, addFood, setAddFood]);
 
     return (
         <RestaurantContext.Provider value={contextValues}>

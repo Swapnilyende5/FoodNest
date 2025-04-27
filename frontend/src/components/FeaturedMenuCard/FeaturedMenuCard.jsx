@@ -26,28 +26,26 @@ const FeaturedMenu = () => {
     }
 
     return (
-        <>
-            <div className='bg-white'>
-                <div className="container py-5">
-                    <h2 className="mb-3 fw-semibold">Restaurants with online food delivery</h2>
-                    <div className="d-flex flex-wrap gap-2 mb-4">
-                        <button className="btn btn-outline-secondary">Filter</button>
-                        <button className="btn btn-outline-secondary">Sort By</button>
-                        <button className="btn btn-outline-secondary">Fast Delivery</button>
-                        <button className="btn btn-outline-secondary">Ratings 4.0+</button>
-                        <button className="btn btn-outline-secondary">Pure Veg</button>
-                        <button className="btn btn-outline-secondary">Offers</button>
-                        <button className="btn btn-outline-secondary">Rs. 300–Rs. 600</button>
-                        <button className="btn btn-outline-secondary">Less than Rs. 300</button>
-                    </div>
-                    <div className="row g-4">
-                        {restaurants.map((item) => {
-                            return <ShopCard item={item} handleClick={handleClick} />
-                        })}
-                    </div>
+        <div className='bg-white' id='ordernow'>
+            <div className="container py-5">
+                <h2 className="mb-3 fw-semibold">Fast & Fresh Online Restaurant Orders</h2>
+                <div className="d-flex flex-wrap gap-2 mb-4">
+                    <button className="btn btn-outline-secondary">Filter</button>
+                    <button className="btn btn-outline-secondary">Sort By</button>
+                    <button className="btn btn-outline-secondary">Fast Delivery</button>
+                    <button className="btn btn-outline-secondary">Ratings 4.0+</button>
+                    <button className="btn btn-outline-secondary">Pure Veg</button>
+                    <button className="btn btn-outline-secondary">Offers</button>
+                    <button className="btn btn-outline-secondary">Rs. 300–Rs. 600</button>
+                    <button className="btn btn-outline-secondary">Less than Rs. 300</button>
+                </div>
+                <div className="row g-4">
+                    {restaurants.map((item) => {
+                        return <ShopCard item={item} handleClick={handleClick} />
+                    })}
                 </div>
             </div>
-        </>
+        </div>
     );
 };
 
