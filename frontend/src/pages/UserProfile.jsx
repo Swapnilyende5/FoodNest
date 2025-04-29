@@ -1,156 +1,411 @@
-import React, { useEffect, useState } from 'react';
-import axiosInstance from '../../axiosInstance';
-import { Link } from 'react-router-dom';
+import React, { useContext, useEffect, useState } from "react";
+import axiosInstance from "../../axiosInstance";
+import { Link, useNavigate } from "react-router-dom";
+import { RestaurantContext } from "../context/restaurantContext";
+import "./RestaurantMenu.scss"
 
 const UserProfile = () => {
-    // const { isAuthenticated } = useContext(RestaurantContext);
+    const { setIsAuthenticated } = useContext(RestaurantContext);
+    const navigate = useNavigate();
     const [userData, setUserData] = useState({});
-    const [activeTab, setActiveTab] = useState('profile');
+    const [activeTab, setActiveTab] = useState("profile");
     const [editProfile, setEditProfile] = useState(false);
+    const [changePassword, setChangePassword] = useState(true);
+    const [password, setPassword] = useState({
+        oldPassword: "",
+        newPassword: "",
+    });
 
-    // useEffect(() => {
-    //     // Simulated fetch — replace with actual API call
-    //     const storedUser = JSON.parse(localStorage.getItem('user'));
-    //     if (storedUser) {
-    //         setUserData(storedUser);
-    //     }
-    // }, []);
-
-    // if (!isAuthenticated || !userData) {
-    //     return <p className="text-center mt-5">Please log in to view your profile.</p>;
-    // }
-
-    // console.log("userDatauserDatauserData", userData)
+    // Get User Data
     useEffect(() => {
         const getUser = async () => {
             try {
-                const res = await axiosInstance.get('/user/getuser')
-                console.log("userdataaaaa", res.data.user)
-                setUserData(res.data.user)
+                const res = await axiosInstance.get("/user/getuser");
+                console.log("userdataaaaa", res.data.user);
+                setUserData(res.data.user);
             } catch (error) {
-                const errorMsg = error.response?.data?.message || "Login failed. Please try again.";
-                console.log("errorMsg", errorMsg)
+                const errorMsg =
+                    error.response?.data?.message || "Login failed. Please try again.";
+                console.log("errorMsg", errorMsg);
             }
-        }
-        getUser()
-    }, [])
+        };
+        getUser();
+    }, []);
 
-    const handleEditProfile = () => {
-        setEditProfile(!editProfile)
-    }
+    // Edit User Data
     const handleUpdateUser = () => {
-        setEditProfile(!editProfile)
+        setEditProfile((prev) => !prev);
         const updateUser = async () => {
             try {
-                const updateResponse = await axiosInstance.put('/user/updateuser', {
+                const updateResponse = await axiosInstance.put("/user/updateuser", {
                     userName: userData?.userName,
                     address: [userData?.address],
-                    phone: userData?.phone
-                })
-                console.log("userdataaaaa", updateResponse)
+                    phone: userData?.phone,
+                });
+                console.log("userdataaaaa", updateResponse);
             } catch (error) {
-                const errorMsg = error.response?.data?.message || "Failed Updating user.";
-                console.log("errorMsg", errorMsg)
+                const errorMsg =
+                    error.response?.data?.message || "Failed Updating user.";
+                console.log("errorMsg", errorMsg);
             }
-        }
-        updateUser()
-    }
-
+        };
+        updateUser();
+    };
     const handleChange = (e) => {
-        const { name, value } = e.target
+        const { name, value } = e.target;
         setUserData((prev) => ({
             ...prev,
-            [name]: value
-        }))
-    }
+            [name]: value,
+        }));
+    };
 
+    // Edit User Password
+    const handleChangePass = () => {
+        setChangePassword(false);
+        const editPassword = async () => {
+            try {
+                const editPasswordResponse = await axiosInstance.put(
+                    "/user/updatepassword",
+                    {
+                        oldPassword: password.oldPassword,
+                        newPassword: password.newPassword,
+                    }
+                );
+                setChangePassword(true);
+                setPassword({
+                    oldPassword: "",
+                    newPassword: "",
+                });
+                console.log("editPasswordResponse", editPasswordResponse);
+            } catch (error) {
+                alert("Please provide correct old password!");
+                setPassword({
+                    oldPassword: "",
+                    newPassword: "",
+                });
+                const errorMsg =
+                    error.response?.data?.message || "Failed Updating User Password.";
+                console.log("errorMsg", errorMsg);
+            }
+        };
+        password.oldPassword && password.newPassword && editPassword();
+    };
+
+    const handleChangePassword = (e) => {
+        const { name, value } = e.target;
+        setPassword((prev) => ({
+            ...prev,
+            [name]: value,
+        }));
+    };
+
+    // Delete Account
+    const handleDelete = () => {
+        const deleteAccount = async () => {
+            try {
+                const deleteAccountRes = await axiosInstance.delete(
+                    `/user/deleteuser/${userData._id}`
+                );
+                localStorage.removeItem("token");
+                localStorage.removeItem("usertype");
+                setIsAuthenticated(false);
+                navigate("/login");
+                console.log("deleteAccountRes", deleteAccountRes);
+            } catch (error) {
+                const errorMsg =
+                    error.response?.data?.message || "Failed Deleting Account.";
+                console.log("errorMsg", errorMsg);
+            }
+        };
+        deleteAccount();
+    };
 
     return (
-        <section class="container py-5">
-            <div class="row">
-                <div class="col-md-4 mb-4">
-                    <div class="card shadow-sm border-0 overflow-hidden">
-                        <div class="bg-success text-white text-center py-4">
-                            <img src={userData?.profile} alt="Profile" class="rounded-circle border border-3 border-white mb-2" width="100" height="100" />
-                            <h5 class="mb-0">{userData.userName}</h5>
+        <section className="container py-5">
+            <div className="row">
+                <div className="col-md-4 mb-4">
+                    <div className="card shadow-sm border-0 overflow-hidden">
+                        <div className="bg-success text-white text-center py-4">
+                            <img
+                                src={userData?.profile}
+                                alt="Profile"
+                                className="rounded-circle border border-3 border-white mb-2"
+                                width="100"
+                                height="100"
+                            />
+                            <h5 className="mb-0">{userData.userName}</h5>
                             <small>{userData.email}</small>
                         </div>
-                        <div class="card-body text-center">
-                            <p class="text-muted small mb-2">Joined: {userData?.createdAt?.slice(0, 10)}</p>
-                            {!editProfile ? <button class="btn btn-outline-primary btn-sm w-100 mb-2" onClick={handleEditProfile}>Edit Profile</button> : <button class="btn btn-outline-primary btn-sm w-100 mb-2" onClick={handleUpdateUser}>Save</button>}
-                            <button class="btn btn-outline-secondary btn-sm w-100">Change Password</button>
+                        <div className="card-body text-center">
+                            <p className="text-muted small mb-2">
+                                Joined: {userData?.createdAt?.slice(0, 10)}
+                            </p>
+
+                            {!editProfile ? (
+                                <button
+                                    className="btn btn-outline-primary btn-sm w-100 mb-2"
+                                    onClick={() => {
+                                        setEditProfile((prev) => !prev);
+                                        if (activeTab !== "profile") {
+                                            setActiveTab("profile");
+                                        }
+                                    }}
+                                    disabled={!changePassword}
+                                >
+                                    Edit Profile
+                                </button>
+                            ) : (
+                                <div className="d-flex">
+                                    <button
+                                        className="btn btn-outline-success btn-sm w-100 mb-2 me-1"
+                                        onClick={handleUpdateUser}
+                                    >
+                                        Save
+                                    </button>
+                                    <button
+                                        className="btn btn-outline-danger btn-sm w-100 mb-2 ms-1"
+                                        onClick={() => {
+                                            setEditProfile((prev) => !prev);
+                                        }}
+                                    >
+                                        Cancel
+                                    </button>
+                                </div>
+                            )}
+
+                            {changePassword ? (
+                                <button
+                                    className="btn btn-outline-secondary btn-sm w-100"
+                                    onClick={handleChangePass}
+                                    disabled={editProfile}
+                                >
+                                    Change Password
+                                </button>
+                            ) : (
+                                <div className="d-flex">
+                                    <button
+                                        className="btn btn-outline-success btn-sm w-100 me-1"
+                                        onClick={handleChangePass}
+                                    >
+                                        Save
+                                    </button>
+                                    <button
+                                        className="btn btn-outline-danger btn-sm w-100 ms-1"
+                                        onClick={() => {
+                                            setChangePassword((prev) => !prev);
+                                        }}
+                                    >
+                                        Cancel
+                                    </button>
+                                </div>
+                            )}
                         </div>
                     </div>
                 </div>
 
-                <div class="col-md-8">
-                    <div class="card shadow-sm border-0">
-                        <div class="card-header bg-white border-bottom-0">
-                            <ul class="nav nav-tabs card-header-tabs" role="tablist">
-                                <li class="nav-item">
-                                    <Link class={`nav-link ${activeTab === 'profile' ? 'active text-primary fw-bold' : 'text-dark'}`} data-bs-toggle="tab" onClick={() => setActiveTab('profile')} role="tab">Profile Info</Link>
-                                </li>
-                                <li class="nav-item">
-                                    <Link class={`nav-link ${activeTab === 'orders' ? 'active text-primary fw-bold' : 'text-dark'}`} data-bs-toggle="tab" onClick={() => setActiveTab('orders')} role="tab">Order History</Link>
-                                </li>
-                                <li class="nav-item">
-                                    <Link class={`nav-link ${activeTab === 'settings' ? 'active text-primary fw-bold' : 'text-dark'}`} data-bs-toggle="tab" onClick={() => setActiveTab('settings')} role="tab">Settings</Link>
-                                </li>
-                            </ul>
-                        </div>
-
-                        <div class="card-body tab-content">
-
-                            <div class={`tab-pane fade ${activeTab === 'profile' ? 'show active' : ''}`} id="profile" role="tabpanel">
-                                <h6 class="mb-3 fw-bold text-primary">Personal Information</h6>
-                                <div class="row mb-2">
-                                    <div class="col-sm-4 text-muted">Full Name:</div>
-                                    {editProfile ? <input className='col-sm-8' type="text" name='userName' value={userData.userName} onChange={handleChange} /> : <div class="col-sm-8 fw-medium">{userData.userName}</div>}
-                                </div>
-                                <div class="row mb-2">
-                                    <div class="col-sm-4 text-muted">Email:</div>
-                                    <div class="col-sm-8 fw-medium">{userData.email}</div>
-                                </div>
-                                <div class="row mb-2">
-                                    <div class="col-sm-4 text-muted">Phone:</div>
-                                    {editProfile ? <input className='col-sm-8' type="number" name='phone' value={userData.phone} onChange={handleChange} /> : <div class="col-sm-8 fw-medium">{userData.phone}</div>}
-                                </div>
-                                <div class="row mb-2">
-                                    <div class="col-sm-4 text-muted">Address:</div>
-                                    {editProfile ? <input className='col-sm-8' type="text" name='address' value={userData.address} onChange={handleChange} /> : <div class="col-sm-8 fw-medium">{userData.address}</div>}
-                                </div>
-                            </div>
-
-                            <div class={`tab-pane fade ${activeTab === 'orders' ? 'show active' : ''}`} id="orders" role="tabpanel">
-                                <h6 class="fw-bold mb-3 text-primary">Order History</h6>
-                                <div class="alert alert-info">
-                                    You haven't placed any orders yet.
-                                </div>
-                            </div>
-
-                            <div class={`tab-pane fade ${activeTab === 'settings' ? 'show active' : ''}`} id="settings" role="tabpanel">
-                                <h6 class="fw-bold mb-3 text-primary">Account Settings</h6>
-                                <ul class="list-group list-group-flush">
-                                    <li class="list-group-item d-flex justify-content-between align-items-center">
-                                        Email Notifications
-                                        <span class="badge bg-success">Enabled</span>
+                <div className="col-md-8">
+                    <div className="card shadow-sm border-0">
+                        {changePassword ? (
+                            <div className="card-header bg-white border-bottom-0">
+                                <ul className="nav nav-tabs card-header-tabs" role="tablist">
+                                    <li className="nav-item">
+                                        <Link
+                                            className={`nav-link ${activeTab === "profile"
+                                                ? "active text-primary fw-bold"
+                                                : "text-dark"
+                                                }`}
+                                            data-bs-toggle="tab"
+                                            onClick={() => setActiveTab("profile")}
+                                            role="tab"
+                                        >
+                                            Profile Info
+                                        </Link>
                                     </li>
-                                    <li class="list-group-item d-flex justify-content-between align-items-center">
-                                        Location Access
-                                        <span class="badge bg-secondary">Disabled</span>
+                                    <li className="nav-item">
+                                        <Link
+                                            className={`nav-link ${activeTab === "orders"
+                                                ? "active text-primary fw-bold"
+                                                : "text-dark"
+                                                }`}
+                                            data-bs-toggle="tab"
+                                            onClick={() => setActiveTab("orders")}
+                                            role="tab"
+                                        >
+                                            Order History
+                                        </Link>
                                     </li>
-                                    <li class="list-group-item d-flex justify-content-between align-items-center">
-                                        Preferred Language
-                                        <span class="text-muted">English</span>
+                                    <li className="nav-item">
+                                        <Link
+                                            className={`nav-link ${activeTab === "settings"
+                                                ? "active text-primary fw-bold"
+                                                : "text-dark"
+                                                }`}
+                                            data-bs-toggle="tab"
+                                            onClick={() => setActiveTab("settings")}
+                                            role="tab"
+                                        >
+                                            Settings
+                                        </Link>
                                     </li>
                                 </ul>
                             </div>
-                        </div>
+                        ) : (
+                            <div className="card-header bg-white border-bottom-0">
+                                <ul className="nav nav-tabs card-header-tabs" role="tablist">
+                                    <li className="nav-item">
+                                        <Link
+                                            className="nav-link active text-primary fw-bold"
+                                            data-bs-toggle="tab"
+                                            role="tab"
+                                        >
+                                            Change Password
+                                        </Link>
+                                    </li>
+                                </ul>
+                            </div>
+                        )}
+                        {changePassword ? (
+                            <div className="card-body tab-content">
+                                <div
+                                    className={`tab-pane fade ${activeTab === "profile" ? "show active" : ""
+                                        }`}
+                                    id="profile"
+                                    role="tabpanel"
+                                >
+                                    <h6 className="mb-3 fw-bold text-primary">
+                                        Personal Information
+                                    </h6>
+                                    <div className="row mb-2">
+                                        <div className="col-sm-4 text-muted">Full Name:</div>
+                                        {editProfile ? (
+                                            <input
+                                                className="search-input col-sm-8"
+                                                type="text"
+                                                name="userName"
+                                                value={userData.userName}
+                                                onChange={handleChange}
+                                            />
+                                        ) : (
+                                            <div className="col-sm-8 fw-medium">
+                                                {userData.userName}
+                                            </div>
+                                        )}
+                                    </div>
+                                    <div className="row mb-2">
+                                        <div className="col-sm-4 text-muted">Email:</div>
+                                        <div className="col-sm-8 fw-medium">{userData.email}</div>
+                                    </div>
+                                    <div className="row mb-2">
+                                        <div className="col-sm-4 text-muted">Phone:</div>
+                                        {editProfile ? (
+                                            <input
+                                                className="search-input col-sm-8"
+                                                type="number"
+                                                name="phone"
+                                                value={userData.phone}
+                                                onChange={handleChange}
+                                            />
+                                        ) : (
+                                            <div className="col-sm-8 fw-medium">{userData.phone}</div>
+                                        )}
+                                    </div>
+                                    <div className="row mb-2">
+                                        <div className="col-sm-4 text-muted">Address:</div>
+                                        {editProfile ? (
+                                            <input
+                                                className="search-input col-sm-8"
+                                                type="text"
+                                                name="address"
+                                                value={userData.address}
+                                                onChange={handleChange}
+                                            />
+                                        ) : (
+                                            <div className="col-sm-8 fw-medium">
+                                                {userData.address}
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+                                <div
+                                    className={`tab-pane fade ${activeTab === "orders" ? "show active" : ""
+                                        }`}
+                                    id="orders"
+                                    role="tabpanel"
+                                >
+                                    <h6 className="fw-bold mb-3 text-primary">Order History</h6>
+                                    <div className="alert alert-info">
+                                        You haven't placed any orders yet.
+                                    </div>
+                                </div>
+                                <div
+                                    className={`tab-pane fade ${activeTab === "settings" ? "show active" : ""
+                                        }`}
+                                    id="settings"
+                                    role="tabpanel"
+                                >
+                                    <h6 className="fw-bold mb-3 text-primary">
+                                        Account Settings
+                                    </h6>
+                                    <ul className="list-group list-group-flush">
+                                        <li className="list-group-item d-flex justify-content-between align-items-center">
+                                            Email Notifications
+                                            <button disabled className="btn btn-success w-25">
+                                                Enabled
+                                            </button>
+                                        </li>
+                                        <li className="list-group-item d-flex justify-content-between align-items-center">
+                                            Location Access
+                                            <button disabled className="btn btn-secondary w-25">
+                                                Disabled
+                                            </button>
+                                        </li>
+                                        <li className="list-group-item d-flex justify-content-between align-items-center">
+                                            Delete Account
+                                            <button
+                                                className="btn btn-danger w-25"
+                                                onClick={handleDelete}
+                                            >
+                                                Delete
+                                            </button>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        ) : (
+                            <div className="card-body tab-content">
+                                <div
+                                    className="tab-pane fade show active ms-1 w-75"
+                                    id="changePassword"
+                                    role="tabpanel"
+                                >
+                                    <p>Enter your current password and your new password</p>
+                                    <div className="row mb-2">
+                                        <input
+                                            className="search-input col-sm-8"
+                                            name="oldPassword"
+                                            value={password.oldPassword}
+                                            onChange={handleChangePassword}
+                                            type="password"
+                                            placeholder="old password"
+                                        />
+                                    </div>
+                                    <div className="row mb-2">
+                                        <input
+                                            className="search-input col-sm-8"
+                                            name="newPassword"
+                                            value={password.newPassword}
+                                            onChange={handleChangePassword}
+                                            type="password"
+                                            placeholder="new password"
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                        )}
                     </div>
                 </div>
             </div>
         </section>
-
     );
 };
 
