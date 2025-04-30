@@ -3,7 +3,7 @@ import { RestaurantContext } from "../context/restaurantContext";
 import { useContext } from "react";
 
 const Navbar = () => {
-    const { isAuthenticated, setIsAuthenticated } = useContext(RestaurantContext);
+    const { isAuthenticated, setIsAuthenticated, addedItem } = useContext(RestaurantContext);
 
     const userType = localStorage.getItem("usertype");
     const navigate = useNavigate();
@@ -68,6 +68,7 @@ const Navbar = () => {
                                 <li className="nav-item">
                                     <Link className="nav-link" to="/cart">
                                         Cart
+                                        <span className="bg-danger text-white rounded px-2 py-1 ms-1">{addedItem?.length || 0}</span>
                                     </Link>
                                 </li>
                                 <li className="nav-item">

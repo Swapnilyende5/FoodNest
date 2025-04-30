@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import axiosInstance from "../../axiosInstance";
-import { RestaurantContext } from "../context/restaurantContext";
+import axiosInstance from "../../../axiosInstance";
+import { RestaurantContext } from "../../context/restaurantContext";
 
 const Register = () => {
     const [formData, setFormData] = useState({

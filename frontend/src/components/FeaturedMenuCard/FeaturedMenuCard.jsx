@@ -41,7 +41,7 @@ const FeaturedMenu = () => {
                 </div>
                 <div className="row g-4">
                     {restaurants.map((item) => {
-                        return <ShopCard item={item} handleClick={handleClick} />
+                        return <ShopCard key={item.id} item={item} handleClick={handleClick} />
                     })}
                 </div>
             </div>

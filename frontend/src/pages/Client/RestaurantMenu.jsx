@@ -1,9 +1,10 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { RestaurantContext } from '../context/restaurantContext';
+import { RestaurantContext } from '../../context/restaurantContext';
 import "./RestaurantMenu.scss"
+import ToastMessage from '../../components/common/ToastMessage';
 
 const RestaurantMenu = () => {
-    const { selectedRes, setSelectedRes, setAddFood } = useContext(RestaurantContext)
+    const { selectedRes, setSelectedRes, addToCart } = useContext(RestaurantContext)
     const [filterFood, setFilterFood] = useState('')
     const [foodList, setFoodList] = useState(selectedRes?.menu || [])
 
@@ -14,10 +15,6 @@ const RestaurantMenu = () => {
         }
     }, []);
 
-
-    const handleChange = (e) => {
-        setFilterFood(e.target.value)
-    }
     useEffect(() => {
         if (filterFood === '') {
             setFoodList(selectedRes?.menu)
@@ -29,22 +26,17 @@ const RestaurantMenu = () => {
         }
     }, [filterFood, selectedRes.menu])
 
-
-    const addToCart = (item) => {
-        setAddFood([item])
-    }
-
     return (
         <div className='w-75 m-auto mt-5'>
             <h2 className='mb-4 fw-bold'>{selectedRes.restaurantName}</h2>
             <div className='text-center mb-5'>
                 <h6 className='text-muted mb-2'>- Menu -</h6>
-                <input class="search-input w-50" onChange={handleChange} placeholder="Search" />
+                <input className="search-input w-50" onChange={(e) => setFilterFood(e.target.value)} placeholder="Search" />
             </div>
-            {foodList?.map((item) => {
-                const { description, _id, imageId, title, price, } = item || {}
+            {foodList?.map((item, index) => {
+                const { description, imageId, title, price, } = item || {}
                 return <>
-                    <div className='d-flex my-4' key={_id}>
+                    <div className='d-flex my-4' key={index}>
                         <div className="card-body">
                             <h5 className="card-title mb-1">{title}</h5>
                             <h6 className="card-subtitle mb-2 text-muted">₹{price / 100}</h6>
@@ -64,6 +56,7 @@ const RestaurantMenu = () => {
                                 style={{ maxHeight: '120px', width: "180px", objectFit: 'cover' }}
                             />
                             <button className="btn btn-success m-auto d-block w-25 position-absolute" style={{ right: '126px', bottom: '5px' }} onClick={() => addToCart(item)}>ADD</button>
+                            <ToastMessage message={`"${foodList[0]?.title}" added to the cart`} />
                         </div>
                     </div>
                     <hr className='m-0' />

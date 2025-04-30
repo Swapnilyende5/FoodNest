@@ -1,24 +1,9 @@
-import React, { useContext, useState } from "react";
-import "./Cart.scss"; // (new smaller CSS file)
-import { RestaurantContext } from "../context/restaurantContext";
+import React, { useContext } from "react";
+import "./Cart.scss";
+import { RestaurantContext } from "../../context/restaurantContext";
 
 const CartItems = () => {
-    const [toast, setToast] = useState("");
-    const { addFood } = useContext(RestaurantContext)
-
-    console.log(addFood)
-    // const handleCheckout = () => {
-    //     const message = getSubTotal()
-    //         ? "Your order has been confirmed! 🚀 Expect delivery soon."
-    //         : "⚠️ Oops! No items in your cart. Start shopping now!";
-
-    //     setToast(message);
-    //     const button = document.getElementById("toast");
-    //     button.classList.add("show");
-    //     setTimeout(() => {
-    //         button.classList.remove("show");
-    //     }, 3000);
-    // };
+    const { addedItem, removeFromCart } = useContext(RestaurantContext)
 
     return (
         <div className="container cartitems">
@@ -35,7 +20,7 @@ const CartItems = () => {
                 <hr />
             </div>
             {/* )} */}
-            {addFood?.map((item, index) => {
+            {addedItem?.map((item, index) => {
                 return (
                     <div key={index}>
                         <div className="row align-items-center text-center py-2 fw-medium cartitems-row">
@@ -45,16 +30,11 @@ const CartItems = () => {
                             <div className="col">{item?.title}</div>
                             <div className="col">₹ {item?.price / 100}.00</div>
                             <div className="col">
-                                <button className="btn cartitems-quantity">{item?.quantity}</button>
+                                <p className="m-0">1</p>
                             </div>
-                            <div className="col">₹ {item?.price / 100 * item?.price / 100}</div>
+                            <div className="col">₹ {item?.price / 100}.00</div>
                             <div className="col">
-                                {/* <img
-                                    src={remove_icon}
-                                    alt=""
-                                    className="cartitems-remove-icon"
-                                    onClick={() => removeFromCart(id, size)}
-                                /> */}
+                                <i className="bi bi-trash3-fill" style={{ cursor: 'pointer' }} onClick={() => removeFromCart(item?.cartItemId)}></i>
                             </div>
                         </div>
                         <hr />

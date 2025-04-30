@@ -1,14 +1,14 @@
 import { Route, Routes } from "react-router-dom";
 import Navbar from "./components/Navbar.jsx";
-import Register from "./pages/Register.jsx";
-import Login from "./pages/Login.jsx";
+import Register from "./pages/Auth/Register.jsx";
+import Login from "./pages/Auth/Login.jsx";
 import { useContext, useEffect } from "react";
 import { RestaurantContext } from "./context/restaurantContext.jsx";
-import Home from "./pages/Home.jsx";
-import RestaurantMenu from "./pages/RestaurantMenu.jsx";
-import HomeGuest from "./pages/HomeGuest.jsx";
-import UserProfile from "./pages/UserProfile.jsx";
-import Cart from "./pages/Cart.jsx";
+import Home from "./pages/Home/Home.jsx";
+import RestaurantMenu from "./pages/Client/RestaurantMenu.jsx";
+import HomeGuest from "./pages/Auth/HomeGuest.jsx";
+import UserProfile from "./pages/Client/UserProfile.jsx";
+import Cart from "./pages/Client/Cart.jsx";
 
 function App() {
   const { isAuthenticated, setIsAuthenticated } = useContext(RestaurantContext);

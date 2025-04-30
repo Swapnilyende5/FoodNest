@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
-import axiosInstance from "../../axiosInstance";
+import axiosInstance from "../../../axiosInstance";
 import { Link, useNavigate } from "react-router-dom";
-import { RestaurantContext } from "../context/restaurantContext";
+import { RestaurantContext } from "../../context/restaurantContext";
 import "./RestaurantMenu.scss"
 
 const UserProfile = () => {
