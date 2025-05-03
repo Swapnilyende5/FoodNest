@@ -29,7 +29,7 @@ const userSchema = new mongoose.Schema({
     },
     profile: {
         type: String,
-        default: "https://www.shutterstock.com/image-vector/vector-icon-join-600nw-1171530520.jpg"
+        default: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQIf4R5qPKHPNMyAqV-FjS_OTBB8pfUV29Phg&s"
     },
     answer: {
         type: String,

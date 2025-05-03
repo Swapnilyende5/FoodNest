@@ -1,19 +1,23 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { RestaurantContext } from '../../context/restaurantContext';
-import "./RestaurantMenu.scss"
 import ToastMessage from '../../components/common/ToastMessage';
+import "./RestaurantMenu.scss"
 
 const RestaurantMenu = () => {
-    const { selectedRes, setSelectedRes, addToCart } = useContext(RestaurantContext)
+    const { selectedRes, setSelectedRes, addToCart, addedItemToast } = useContext(RestaurantContext)
+    console.log("foodListfoodListfoodList", selectedRes)
     const [filterFood, setFilterFood] = useState('')
     const [foodList, setFoodList] = useState(selectedRes?.menu || [])
 
+    console.log("foodListfoodListfoodList", foodList)
+
     useEffect(() => {
         const storedRestaurant = localStorage.getItem("restaurantMenu");
+        console.log("storedRestaurantstoredRestaurant", storedRestaurant)
         if (storedRestaurant) {
             setSelectedRes(JSON.parse(storedRestaurant));
         }
-    }, []);
+    }, [setSelectedRes]);
 
     useEffect(() => {
         if (filterFood === '') {
@@ -56,7 +60,7 @@ const RestaurantMenu = () => {
                                 style={{ maxHeight: '120px', width: "180px", objectFit: 'cover' }}
                             />
                             <button className="btn btn-success m-auto d-block w-25 position-absolute" style={{ right: '126px', bottom: '5px' }} onClick={() => addToCart(item)}>ADD</button>
-                            <ToastMessage message={`"${foodList[0]?.title}" added to the cart`} />
+                            <ToastMessage message={`"${addedItemToast.title}" added to the cart`} />
                         </div>
                     </div>
                     <hr className='m-0' />

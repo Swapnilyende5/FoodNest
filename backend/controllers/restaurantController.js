@@ -2,21 +2,22 @@ const restaurantModel = require("../models/restaurantModel");
 
 const createRestaurantController = async (req, res) => {
     try {
-        const { title, imageUrl, foods, time, pickup, delivery, isOpen, logoUrl, rating, ratingCount, code, coords } = req.body;
+        const { restaurantName, email, phone, password, address, latitude, longitude, openingHours, pickup, delivery, logoUrl, imageUrl, fssaiNumber, gstNumber, rating, ratingCount } = req.body;
 
-        if (!title || !coords) {
+        if (!restaurantName || !email || !password) {
             return res.status(500).send({
                 success: false,
-                message: 'Title and Cords are required!',
+                message: 'Restaurant Name, Email and Password are required!',
             })
         }
         const newRestaurant = new restaurantModel({
-            title, imageUrl, foods, time, pickup, delivery, isOpen, logoUrl, rating, ratingCount, code, coords
+            restaurantName, email, phone, password, address, latitude, longitude, openingHours, pickup, delivery, logoUrl, imageUrl, fssaiNumber, gstNumber, rating, ratingCount
         })
         await newRestaurant.save()
         res.status(201).send({
             success: true,
             message: 'New Restaurant created successfully',
+            newRestaurant
         })
     } catch (error) {
         console.log(error)
@@ -51,7 +52,6 @@ const getAllRestaurantsController = async (req, res) => {
         })
     }
 }
-
 const getRestaurantController = async (req, res) => {
     try {
         const restaurantId = req.params.id
@@ -82,6 +82,7 @@ const getRestaurantController = async (req, res) => {
     }
 }
 
+
 const deleteRestaurantController = async (req, res) => {
     try {
         const restaurantId = req.params.id
@@ -108,4 +109,4 @@ const deleteRestaurantController = async (req, res) => {
 
 
 
-module.exports = { createRestaurantController, getRestaurantController, getAllRestaurantsController, deleteRestaurantController }
+module.exports = { createRestaurantController, getAllRestaurantsController, getRestaurantController, deleteRestaurantController }

@@ -4,55 +4,51 @@ const orderModel = require("../models/orderModel");
 const createFoodController = async (req, res) => {
     try {
         const {
-            title,
-            description,
-            price,
-            imageUrl,
-            foodTags,
-            category,
-            code,
-            isAvailable,
-            restaurant,
-            rating, ratingCount
+            menu,
+            restaurantName,
+            restaurantId,
         } = req.body;
-
-        if (!title || !description || !price || !restaurant) {
-            return res.status(500).send({
+        console.log("menumenumenu", menu)
+        if (!restaurantName || !restaurantId || !Array.isArray(menu) || menu.length === 0) {
+            return res.status(400).send({
                 success: false,
-                message: "Please Provide required fields",
+                message: "Restaurant details and at least one menu item are required!",
             });
         }
-        const newFood = new foodModel({
-            title,
-            description,
-            price,
-            imageUrl,
-            foodTags,
-            category,
-            code,
-            isAvailable,
-            restaurant,
-            rating, ratingCount
-        })
-        await newFood.save();
+
+        let restaurantFoodMenu = await foodModel.findOne({ restaurantId });
+
+        if (restaurantFoodMenu) {
+            restaurantFoodMenu.menu.push(...menu);
+            await restaurantFoodMenu.save();
+        } else {
+            restaurantFoodMenu = new foodModel({
+                restaurantName,
+                restaurantId,
+                menu,
+            });
+            await restaurantFoodMenu.save();
+        }
+        console.log("restaurantFoodMenurestaurantFoodMenu", restaurantFoodMenu)
+
         res.status(201).send({
             success: true,
-            message: "New Food Item Created",
-            newFood,
+            message: 'Menu items created successfully',
+            foods: restaurantFoodMenu,
         });
     } catch (error) {
-        console.log(error)
+        console.log(error);
         res.status(500).send({
             success: false,
-            message: 'Error creating food API',
-            error
-        })
+            message: "Error creating food API",
+            error,
+        });
     }
-}
+};
 
 const getAllFoodsController = async (req, res) => {
     try {
-        const foods = await foodModel.find({})
+        const foods = await foodModel.find({});
         if (!foods) {
             return res.status(404).send({
                 success: false,
@@ -65,14 +61,14 @@ const getAllFoodsController = async (req, res) => {
             foods,
         });
     } catch (error) {
-        console.log(error)
+        console.log(error);
         res.status(500).send({
             success: false,
-            message: 'Error getting all food API',
-            error
-        })
+            message: "Error getting all food API",
+            error,
+        });
     }
-}
+};
 
 const getFoodController = async (req, res) => {
     try {
@@ -83,7 +79,7 @@ const getFoodController = async (req, res) => {
                 message: "Please provide food id",
             });
         }
-        const food = await foodModel.findById(foodId)
+        const food = await foodModel.findById(foodId);
         if (!food) {
             return res.status(404).send({
                 success: false,
@@ -92,18 +88,17 @@ const getFoodController = async (req, res) => {
         }
         res.status(200).send({
             success: true,
-            food
+            food,
         });
-
     } catch (error) {
-        console.log(error)
+        console.log(error);
         res.status(500).send({
             success: false,
-            message: 'Error getting food item API',
-            error
-        })
+            message: "Error getting food item API",
+            error,
+        });
     }
-}
+};
 
 // GET food by restaurant
 const getFoodByRestaurantController = async (req, res) => {
@@ -115,7 +110,7 @@ const getFoodByRestaurantController = async (req, res) => {
                 message: "Please provide restaurant id",
             });
         }
-        const food = await foodModel.find({ restaurant: restaurantId })
+        const food = await foodModel.find({ restaurant: restaurantId });
         if (!food) {
             return res.status(404).send({
                 success: false,
@@ -125,18 +120,17 @@ const getFoodByRestaurantController = async (req, res) => {
         res.status(200).send({
             success: true,
             message: "Food based on restaurant",
-            food
+            food,
         });
-
     } catch (error) {
-        console.log(error)
+        console.log(error);
         res.status(500).send({
             success: false,
-            message: 'Error getting food item API',
-            error
-        })
+            message: "Error getting food item API",
+            error,
+        });
     }
-}
+};
 
 // Update Food Item
 const updateFoodController = async (req, res) => {
@@ -165,7 +159,8 @@ const updateFoodController = async (req, res) => {
             code,
             isAvailable,
             restaurant,
-            rating, ratingCount
+            rating,
+            ratingCount,
         } = req.body;
         await foodModel.findByIdAndUpdate(
             foodID,
@@ -179,7 +174,8 @@ const updateFoodController = async (req, res) => {
                 code,
                 isAvailable,
                 restaurant,
-                rating, ratingCount
+                rating,
+                ratingCount,
             },
             { new: true }
         );
@@ -206,17 +202,23 @@ const deleteFoodController = async (req, res) => {
                 message: "provide food id",
             });
         }
-        const food = await foodModel.findById(foodId);
-        if (!food) {
+
+        const updatedFoodDoc = await foodModel.findOneAndUpdate(
+            { "menu._id": foodId },
+            { $pull: { menu: { _id: foodId } } },
+            { new: true }
+        );
+
+        if (!updatedFoodDoc) {
             return res.status(404).send({
                 success: false,
-                message: "No Food Found with id",
+                message: "Food item not found",
             });
         }
-        await foodModel.findByIdAndDelete(foodId);
         res.status(200).send({
             success: true,
-            message: "Food Item Dleeted ",
+            message: "Food item deleted successfully",
+            updatedMenu: updatedFoodDoc.menu,
         });
     } catch (error) {
         console.log(error);
@@ -226,7 +228,7 @@ const deleteFoodController = async (req, res) => {
             error,
         });
     }
-}
+};
 
 const placeOrderController = async (req, res) => {
     try {
@@ -244,7 +246,7 @@ const placeOrderController = async (req, res) => {
 
         const newOrder = new orderModel({
             foods: cart,
-            payment: total,
+            payment: total / 100,
             buyer: req.userId,
         });
 
@@ -262,7 +264,7 @@ const placeOrderController = async (req, res) => {
             error,
         });
     }
-}
+};
 
 const orderStatusController = async (req, res) => {
     try {
@@ -293,4 +295,13 @@ const orderStatusController = async (req, res) => {
     }
 };
 
-module.exports = { createFoodController, getAllFoodsController, getFoodController, getFoodByRestaurantController, updateFoodController, deleteFoodController, placeOrderController, orderStatusController }
+module.exports = {
+    createFoodController,
+    getAllFoodsController,
+    getFoodController,
+    getFoodByRestaurantController,
+    updateFoodController,
+    deleteFoodController,
+    placeOrderController,
+    orderStatusController,
+};

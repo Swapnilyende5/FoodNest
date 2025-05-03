@@ -1,5 +1,6 @@
-
 const Hero = () => {
+    const userType = localStorage.getItem("usertype");
+
     return (
         <div className="position-relative d-flex align-items-center" style={{ height: "600px" }}>
             <div
@@ -19,7 +20,7 @@ const Hero = () => {
                         Fresh meals from your favorite restaurants, delivered fast and hot.
                     </p>
                     <div className="d-flex gap-3">
-                        <a href="#partnerus" className="btn btn-lg btn-dark text-light">Partner With Us</a>
+                        <a href="#partnerus" className="btn btn-lg btn-dark text-light">{userType === "client" ? 'Partner With Us' : 'Register Your Restaurant'}</a>
                         <a href="#ordernow" className="btn btn-lg btn-outline-dark d-flex align-items-center">
                             Order Now
                         </a>

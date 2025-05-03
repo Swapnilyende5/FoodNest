@@ -1,33 +1,58 @@
-const mongoose = require("mongoose")
+const mongoose = require("mongoose");
 
 const restaurantSchema = new mongoose.Schema({
-    title: {
+    restaurantName: {
         type: String,
-        required: [true, 'Restaurant title is required']
+        required: [true, "Restaurant name is required"],
     },
-    imageUrl: {
-        type: String
-    },
-    foods: {
-        type: Array,
-    },
-    time: {
+    email: {
         type: String,
+        required: [true, "Email is required"],
+        unique: true,
+    },
+    phone: {
+        type: String,
+        required: [true, "Phone number is required"],
+    },
+    password: {
+        type: String,
+        required: [true, "Password is required"],
+    },
+    address: {
+        type: String,
+        required: [true, "Address is required"],
+    },
+    latitude: {
+        type: Number,
+        required: [true, "Latitude is required"],
+    },
+    longitude: {
+        type: Number,
+        required: [true, "Longitude is required"],
+    },
+    openingHours: {
+        type: String,
+        required: [true, "Opening hours are required"],
     },
     pickup: {
         type: Boolean,
-        default: true
+        default: true,
     },
     delivery: {
         type: Boolean,
-        default: true
-    },
-    isOpen: {
-        type: Boolean,
-        default: true
+        default: true,
     },
     logoUrl: {
-        type: String
+        type: String,
+    },
+    imageUrl: {
+        type: String,
+    },
+    fssaiNumber: {
+        type: String,
+    },
+    gstNumber: {
+        type: String,
     },
     rating: {
         type: Number,
@@ -36,20 +61,9 @@ const restaurantSchema = new mongoose.Schema({
         max: 5,
     },
     ratingCount: {
-        type: String
+        type: String,
+        default: "0",
     },
-    code: {
-        type: String
-    },
-    coords: {
-        id: { type: String },
-        latitude: { type: Number },
-        latitudeDelta: { type: Number },
-        longitude: { type: Number },
-        longitudeDelta: { type: Number },
-        address: { type: String },
-        title: { type: String },
-    }
-}, { timestamps: true })
+}, { timestamps: true });
 
-module.exports = mongoose.model("Restaurant", restaurantSchema)
+module.exports = mongoose.model("Restaurant", restaurantSchema);

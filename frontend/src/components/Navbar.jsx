@@ -126,27 +126,27 @@ const Navbar = () => {
                         {isAuthenticated && userType === "admin" && (
                             <>
                                 <li className="nav-item">
-                                    <Link className="nav-link" to="/restaurant/dashboard">
+                                    <Link className="nav-link" to="/admin/dashboard">
                                         Admin Dashboard
                                     </Link>
                                 </li>
                                 <li className="nav-item">
-                                    <Link className="nav-link" to="/restaurant/foods">
+                                    <Link className="nav-link" to="/admin/manage-users">
                                         Manage Users
                                     </Link>
                                 </li>
                                 <li className="nav-item">
-                                    <Link className="nav-link" to="/restaurant/orders">
+                                    <Link className="nav-link" to="/admin/manage-vendors">
                                         Manage Vendors
                                     </Link>
                                 </li>
                                 <li className="nav-item">
-                                    <Link className="nav-link" to="/restaurant/profile">
+                                    <Link className="nav-link" to="/admin/reports">
                                         Reports/Analytics
                                     </Link>
                                 </li>
                                 <li className="nav-item">
-                                    <Link className="nav-link" to="/restaurant/profile">
+                                    <Link className="nav-link" to="/admin/settings">
                                         Settings
                                     </Link>
                                 </li>

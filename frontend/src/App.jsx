@@ -9,9 +9,15 @@ import RestaurantMenu from "./pages/Client/RestaurantMenu.jsx";
 import HomeGuest from "./pages/Auth/HomeGuest.jsx";
 import UserProfile from "./pages/Client/UserProfile.jsx";
 import Cart from "./pages/Client/Cart.jsx";
+import MyOrders from "./pages/Client/MyOrders.jsx";
+import RegisterRestaurant from "./pages/Vendor/RegisterRestaurant.jsx";
+import RestaurantProfile from "./pages/Vendor/RestaurantProfile.jsx";
+import MyRestaurantMenu from "./pages/Vendor/MyRestaurantMenu.jsx";
 
 function App() {
   const { isAuthenticated, setIsAuthenticated } = useContext(RestaurantContext);
+  const userType = localStorage.getItem("usertype");
+
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (token) {
@@ -32,7 +38,7 @@ function App() {
           element={!isAuthenticated ? <Login /> : <Home />}
         />
         <Route path="/" element={isAuthenticated ? <Home /> : <HomeGuest />} />
-        {isAuthenticated && (
+        {isAuthenticated && userType === "client" && (
           <>
             <Route path="/" element={<Home />} />
             <Route path="/restaurant" element={<RestaurantMenu />}>
@@ -40,6 +46,16 @@ function App() {
             </Route>
             <Route path="/profile" element={<UserProfile />} />
             <Route path="/cart" element={<Cart />} />
+            <Route path="/orders" element={<MyOrders />} />
+          </>
+        )}
+        {isAuthenticated && userType === "vendor" && (
+          <>
+            <Route path="/registerRestaurant" element={<RegisterRestaurant />} />
+            <Route path="/restaurant/profile" element={<RestaurantProfile />} />
+            <Route path="/restaurant" element={<MyRestaurantMenu />}>
+              <Route path=":restaurantId" element={<MyRestaurantMenu />} />
+            </Route>
           </>
         )}
       </Routes>

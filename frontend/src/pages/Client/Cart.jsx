@@ -1,25 +1,64 @@
 import React, { useContext } from "react";
-import "./Cart.scss";
 import { RestaurantContext } from "../../context/restaurantContext";
+import ToastMessage from "../../components/common/ToastMessage";
+import axiosInstance from "../../../axiosInstance";
+import { useNavigate } from "react-router-dom";
+import "./Cart.scss";
 
 const CartItems = () => {
-    const { addedItem, removeFromCart } = useContext(RestaurantContext)
+    const { addedItem, setAddedItem, removeFromCart, subTotal } = useContext(RestaurantContext)
+    const navigate = useNavigate();
+
+    const placeOrder = async () => {
+        if (!addedItem.length) {
+            alert("Cart is empty, Please add something!")
+            return;
+        }
+        try {
+            await axiosInstance.post("/food/placeorder", {
+                cart: addedItem
+            })
+            await axiosInstance.get("/user/getuser");
+        } catch (error) {
+            const errorMsg = error.response?.data?.message || "Failed placing order. Please try again.";
+            console.log("errorMsg", errorMsg)
+        }
+
+        const existingOrders = JSON.parse(localStorage.getItem("recentOrders")) || [];
+        const newOrder = {
+            id: Date.now(),
+            items: addedItem,
+            total: subTotal,
+            date: new Date().toLocaleString(),
+        };
+        localStorage.setItem("recentOrders", JSON.stringify([newOrder, ...existingOrders]));
+        localStorage.removeItem("cartitems");
+        setAddedItem([]);
+
+        const toast = document.getElementById("toast");
+        toast.classList.add("show");
+        setTimeout(() => {
+            toast.classList.remove("show")
+        }, 3000);
+    }
+
+
 
     return (
         <div className="container cartitems">
-            {/* {!!getSubTotal() && ( */}
-            <div className="d-none d-md-block">
-                <div className="row text-center fw-semibold cartitems-header">
-                    <div className="col">Products</div>
-                    <div className="col">Title</div>
-                    <div className="col">Price</div>
-                    <div className="col">Quantity</div>
-                    <div className="col">Total</div>
-                    <div className="col">Remove</div>
+            {addedItem.length > 0 && (
+                <div className="d-none d-md-block">
+                    <div className="row text-center fw-semibold cartitems-header">
+                        <div className="col">Products</div>
+                        <div className="col">Title</div>
+                        <div className="col">Price</div>
+                        <div className="col">Quantity</div>
+                        <div className="col">Total</div>
+                        <div className="col">Remove</div>
+                    </div>
+                    <hr />
                 </div>
-                <hr />
-            </div>
-            {/* )} */}
+            )}
             {addedItem?.map((item, index) => {
                 return (
                     <div key={index}>
@@ -47,7 +86,7 @@ const CartItems = () => {
                     <div>
                         <div className="d-flex justify-content-between py-2">
                             <p className="mb-0">Subtotal</p>
-                            <p className="mb-0">$'getSubTotal()'</p>
+                            <p className="mb-0">₹{subTotal}.00</p>
                         </div>
                         <hr />
                         <div className="d-flex justify-content-between py-2">
@@ -57,17 +96,14 @@ const CartItems = () => {
                         <hr />
                         <div className="d-flex justify-content-between py-2 fw-bold">
                             <h5>Total</h5>
-                            <h5>$getSubTotal()</h5>
+                            <h5>₹{subTotal}</h5>
                         </div>
                     </div>
                     <div className="mt-3">
-                        {/* <MainButton
-                            btnTitle="PROCEED TO CHECKOUT"
-                            handleClick={handleCheckout}
-                            isHomeButton
-                        />
-                        <ToastMessage message={toast} /> */}
+                        <button className="btn btn-success btn-md w-100" onClick={placeOrder} >Proceed to Pay ₹{subTotal}</button>
+                        <button className="btn btn-danger btn-md w-100 mt-3" onClick={() => navigate('/orders')} >Check your recent orders</button>
                     </div>
+                    <ToastMessage message={'Order is Placed'} />
                 </div>
                 <div className="col-md-6">
                     <p>If you have a promo code, Enter it here</p>

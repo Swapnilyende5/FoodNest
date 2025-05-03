@@ -2,6 +2,10 @@ const mongoose = require("mongoose")
 
 const foodSchema = new mongoose.Schema({
     restaurantName: String,
+    restaurantId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Restaurant'
+    },
     menu: [
         {
             title: {
@@ -16,7 +20,7 @@ const foodSchema = new mongoose.Schema({
                 type: Number,
                 required: [true, 'Food Price is required']
             },
-            imageId: {
+            imageUrl: {
                 type: String,
                 default: "https://png.pngtree.com/png-vector/20220623/ourmid/pngtree-food-logo-png-image_5297921.png"
             },
@@ -26,16 +30,13 @@ const foodSchema = new mongoose.Schema({
             category: {
                 type: String,
             },
-            code: {
-                type: String,
+            isVeg: {
+                type: Boolean,
+                default: true
             },
             isAvailable: {
                 type: Boolean,
                 default: true
-            },
-            restaurant: {
-                type: mongoose.Schema.Types.ObjectId,
-                ref: 'Restaurant'
             },
             rating: {
                 type: Number,

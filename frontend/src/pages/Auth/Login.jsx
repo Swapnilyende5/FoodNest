@@ -24,6 +24,7 @@ const Login = () => {
                 email: loginData.email,
                 password: loginData.password,
             })
+            console.log("sdsdsdsdLOGIn", res.data)
             localStorage.setItem("token", res.data.token);
             localStorage.setItem("usertype", res.data.user.userType);
             setIsAuthenticated(true);
