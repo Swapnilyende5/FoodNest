@@ -2,12 +2,13 @@ import React, { useContext, useEffect, useState } from "react";
 import axiosInstance from "../../../axiosInstance";
 import { Link, useNavigate } from "react-router-dom";
 import { RestaurantContext } from "../../context/restaurantContext";
-import "./RestaurantMenu.scss"
+import "./RestaurantMenu.scss";
 
 const UserProfile = () => {
     const { setIsAuthenticated } = useContext(RestaurantContext);
     const navigate = useNavigate();
     const [userData, setUserData] = useState({});
+    const [order, setOrders] = useState([]);
     const [activeTab, setActiveTab] = useState("profile");
     const [editProfile, setEditProfile] = useState(false);
     const [changePassword, setChangePassword] = useState(true);
@@ -30,6 +31,18 @@ const UserProfile = () => {
             }
         };
         getUser();
+        const getRecentOrders = async () => {
+            try {
+                const res = await axiosInstance.get("/order/getRecentOrders");
+                setOrders(res.data.recentOrders);
+            } catch (error) {
+                const errorMsg =
+                    error.response?.data?.message ||
+                    "Failed getting user data. Please try again.";
+                console.log("errorMsg", errorMsg);
+            }
+        };
+        getRecentOrders();
     }, []);
 
     // Edit User Data
@@ -119,6 +132,10 @@ const UserProfile = () => {
         };
         deleteAccount();
     };
+
+    const ordersByCurrentUser = order?.find(
+        (item) => item.userId === userData._id
+    );
 
     return (
         <section className="container py-5">
@@ -333,9 +350,31 @@ const UserProfile = () => {
                                     role="tabpanel"
                                 >
                                     <h6 className="fw-bold mb-3 text-primary">Order History</h6>
-                                    <div className="alert alert-info">
-                                        You haven't placed any orders yet.
-                                    </div>
+                                    {ordersByCurrentUser?.orders.length > 0 ? (
+                                        ordersByCurrentUser?.orders?.map((item) => {
+                                            return (
+                                                <div className="card mb-1">
+                                                    <div className="card-header d-flex justify-content-between">
+                                                        <div className="d-flex">
+                                                            <p className="me-2 m-0">
+                                                                Order: <small>{item.orderId}</small>
+                                                            </p>
+                                                            <p className="m-0">
+                                                                Date: <small>{item.date}</small>
+                                                            </p>
+                                                        </div>
+                                                        <p className="m-0">
+                                                            Total: <small>{item.total}</small>
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            );
+                                        })
+                                    ) : (
+                                        <div className="alert alert-info">
+                                            You haven't placed any orders yet.
+                                        </div>
+                                    )}
                                 </div>
                                 <div
                                     className={`tab-pane fade ${activeTab === "settings" ? "show active" : ""

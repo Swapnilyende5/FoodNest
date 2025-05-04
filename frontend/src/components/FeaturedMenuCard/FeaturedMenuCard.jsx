@@ -1,43 +1,58 @@
 import { useEffect, useState } from 'react';
 import axiosInstance from '../../../axiosInstance';
 import ShopCard from '../common/ShopCard';
-import { restaurants } from '../utils/RestaurantData';
 import './FeaturedMenuCard.scss'
 
 const FeaturedMenu = () => {
     const [food, setFood] = useState([])
-    const [vegRestaurant, setVegRestaurant] = useState(restaurants)
+    const [allRestaurantsList, setAllRestaurantsList] = useState([]);
     const [isVegFilter, setIsVegFilter] = useState('')
     const [ratingFilter, setRatingFilter] = useState(false)
-    console.log("dadadad", food)
-    useEffect(() => {
-        const getAllFoodData = async () => {
-            try {
-                const res = await axiosInstance.get('/food/getall')
-                setFood(res.data.foods)
-            } catch (error) {
-                const errorMsg = error.response?.data?.message || "Login failed. Please try again.";
-                console.log("errorMsg", errorMsg)
-            }
+
+    const getRestaurant = async () => {
+        try {
+            const allRestaurants = await axiosInstance.get('/restaurant/getall');
+            setAllRestaurantsList(allRestaurants.data.allRestaurants);
+            console.log("allRESS", allRestaurants.data.allRestaurants)
+        } catch (error) {
+            const errorMsg =
+                error.response?.data?.message ||
+                "Failed getting Restaurant. Please try again.";
+            console.log("errorMsg", errorMsg);
         }
-        getAllFoodData()
+    };
+
+    const getAllFoodData = async () => {
+        try {
+            const res = await axiosInstance.get('/food/getall')
+            setFood(res.data.foods)
+        } catch (error) {
+            const errorMsg = error.response?.data?.message || "Login failed. Please try again.";
+            console.log("errorMsg", errorMsg)
+        }
+    }
+    useEffect(() => {
+        const fetchAllData = async () => {
+            await getRestaurant()
+            await getAllFoodData()
+        }
+        fetchAllData();
     }, [])
 
-    const handleClick = (title) => {
-        const clickedRestaurant = food.find((item) => item.restaurantName === title)
-        console.log("asda", clickedRestaurant)
+    const handleClick = (id) => {
+        const clickedRestaurant = food.find((item) => item.restaurantId === id)
         localStorage.setItem("restaurantMenu", JSON.stringify(clickedRestaurant));
     }
 
     const applyFilters = (veg, rating) => {
-        let filtered = [...restaurants];
+        let filtered = [...allRestaurantsList];
         if (veg) {
             filtered = filtered.filter((item) => item.isVeg === 'Yes');
         }
         if (rating) {
             filtered = filtered.filter((item) => item.rating > 4.0);
         }
-        setVegRestaurant(filtered);
+        setAllRestaurantsList(filtered);
     };
 
     const filterIsVeg = () => {
@@ -68,7 +83,7 @@ const FeaturedMenu = () => {
                     <button disabled className="btn btn-outline-secondary">Less than Rs. 300</button>
                 </div>
                 <div className="row g-4">
-                    {vegRestaurant.map((item) => {
+                    {allRestaurantsList.map((item) => {
                         return <ShopCard key={item.id} item={item} handleClick={handleClick} />
                     })}
                 </div>

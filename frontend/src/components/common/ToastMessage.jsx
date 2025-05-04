@@ -3,7 +3,7 @@ import "./ToastMessage.scss";
 
 const ToastMessage = ({ message }) => {
   return (
-    <div id="toast" className="toast">
+    <div id="toast" className="text-capitalize toast">
       {message}
     </div>
   );

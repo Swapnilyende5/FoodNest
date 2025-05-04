@@ -1,9 +1,12 @@
-import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { useContext, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import axiosInstance from "../../../axiosInstance";
 import { RestaurantContext } from "../../context/restaurantContext";
 
 const Register = () => {
+    const { setIsAuthenticated } = useContext(RestaurantContext);
+
+    const navigate = useNavigate();
     const [formData, setFormData] = useState({
         userName: '',
         email: '',
@@ -65,6 +68,13 @@ const Register = () => {
         });
     }
 
+    const handleLogin = () => {
+        localStorage.removeItem("token");
+        localStorage.removeItem("usertype");
+        setIsAuthenticated(false);
+        navigate("/login");
+    }
+
     return (
         <form onSubmit={handleSubmit} className="p-4 rounded-4 bg-white mx-md-auto mt-5 mx-3" style={{ maxWidth: '400px' }} autoComplete="off">
             <h2 className="mb-2 fw-semibold text-primary title">
@@ -113,7 +123,7 @@ const Register = () => {
             </div>
             <button type="submit" className="btn btn-primary w-100">Create Account</button>
             <p className="text-center mt-3 small">
-                Already have an account? <Link to='/login' className="text-primary text-decoration-none">Login</Link>
+                Already have an account? <span onClick={handleLogin} style={{ cursor: "pointer" }} className="text-primary text-decoration-none">Login</span>
             </p>
         </form>
     );

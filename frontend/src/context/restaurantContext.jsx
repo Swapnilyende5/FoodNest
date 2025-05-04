@@ -17,7 +17,7 @@ const RestaurantContextProvider = ({ children }) => {
 
     useEffect(() => {
         const total = addedItem.reduce((acc, item) => acc + item.price, 0)
-        setSubTotal(total / 100)
+        setSubTotal(total)
     }, [addedItem])
 
     const addToCart = useCallback((item) => {

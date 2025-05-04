@@ -31,7 +31,7 @@ function App() {
       <Routes>
         <Route
           path="/register"
-          element={!isAuthenticated ? <Register /> : <Home />}
+          element={<Register />}
         />
         <Route
           path="/login"
