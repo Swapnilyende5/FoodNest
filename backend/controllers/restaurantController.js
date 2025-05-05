@@ -1,5 +1,7 @@
 const restaurantModel = require("../models/restaurantModel");
+const bcrypt = require('bcryptjs')
 
+// Register Auth Restaurant
 const createRestaurantController = async (req, res) => {
     try {
         const { restaurantName, email, phone, password, address, latitude, longitude, openingHours, pickup, delivery, logoUrl, imageUrl, fssaiNumber, gstNumber, rating, ratingCount } = req.body;
@@ -10,10 +12,22 @@ const createRestaurantController = async (req, res) => {
                 message: 'Restaurant Name, Email and Password are required!',
             })
         }
-        const newRestaurant = new restaurantModel({
-            restaurantName, email, phone, password, address, latitude, longitude, openingHours, pickup, delivery, logoUrl, imageUrl, fssaiNumber, gstNumber, rating, ratingCount
+
+        const existingRestaurant = await restaurantModel.findOne({ email })
+        if (existingRestaurant) {
+            return res.status(409).send({
+                success: false,
+                message: "Restaurant already exists!",
+            })
+        }
+
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassord = await bcrypt.hash(password, salt);
+
+        const newRestaurant = await restaurantModel.create({
+            restaurantName, email, phone, password: hashedPassord, address, latitude, longitude, openingHours, pickup, delivery, logoUrl, imageUrl, fssaiNumber, gstNumber, rating, ratingCount
         })
-        await newRestaurant.save()
+
         res.status(201).send({
             success: true,
             message: 'New Restaurant created successfully',

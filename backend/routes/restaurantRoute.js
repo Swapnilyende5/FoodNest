@@ -11,7 +11,7 @@ const {
 const router = express.Router();
 
 // Create Restaurant - POST
-router.post("/create", authMiddleware, createRestaurantController);
+router.post("/create", createRestaurantController);
 
 // Get Restaurants - GET
 router.get("/getall", getAllRestaurantsController);

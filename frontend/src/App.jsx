@@ -33,6 +33,7 @@ function App() {
           path="/register"
           element={<Register />}
         />
+        <Route path="/registerRestaurant" element={<RegisterRestaurant />} />
         <Route
           path="/login"
           element={!isAuthenticated ? <Login /> : <Home />}
@@ -51,7 +52,6 @@ function App() {
         )}
         {isAuthenticated && userType === "vendor" && (
           <>
-            <Route path="/registerRestaurant" element={<RegisterRestaurant />} />
             <Route path="/restaurant/profile" element={<RestaurantProfile />} />
             <Route path="/restaurant" element={<MyRestaurantMenu />}>
               <Route path=":restaurantId" element={<MyRestaurantMenu />} />

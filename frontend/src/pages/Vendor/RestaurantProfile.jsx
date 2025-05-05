@@ -37,7 +37,6 @@ const RestaurantProfile = () => {
         latitude,
         longitude,
     } = restaurantProfile || {};
-    console.log("NEWrestaurantProfile", restaurantProfile);
     return (
         <div className="container mt-5">
             <h2 className="mb-4">Restaurant Profile</h2>

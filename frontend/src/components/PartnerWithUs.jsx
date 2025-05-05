@@ -19,7 +19,7 @@ const PartnerWithUs = () => {
                             <li>✅ Easy-to-use dashboard for managing orders</li>
                             <li>✅ Reliable delivery support</li>
                         </ul>
-                        <button className="btn btn-primary mt-4" onClick={() => navigate('/register')}>
+                        <button className="btn btn-primary mt-4" onClick={() => navigate('/registerRestaurant')}>
                             Become a Partner
                         </button>
                     </div>

@@ -1,6 +1,7 @@
 const userModel = require("../models/userModel");
+const restaurantModel = require("../models/restaurantModel");
 const bcrypt = require('bcryptjs')
-const jwt = require('jsonwebtoken')
+const jwt = require('jsonwebtoken');
 
 // Register
 const registerController = async (req, res) => {
@@ -46,7 +47,7 @@ const registerController = async (req, res) => {
     }
 };
 
-// Login
+// Login for User and Restaurant
 const loginController = async (req, res) => {
     try {
         const { email, password } = req.body;
@@ -56,38 +57,45 @@ const loginController = async (req, res) => {
                 message: "All fields are required!",
             })
         }
-        const user = await userModel.findOne({ email })
+
+        let user = await userModel.findOne({ email });
+        let userType = "client";
+
         if (!user) {
-            return res.status(401).send({
-                success: false,
-                message: "User not found, Please create an account",
-                user
-            })
-        }
-        const isMatch = await bcrypt.compare(password, user.password)
-        if (!isMatch) {
-            return res.status(500).send({
-                success: false,
-                message: "Invalid credentials",
-            })
+            user = await restaurantModel.findOne({ email });
+            userType = "vendor";
         }
 
-        // token
-        const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
-            expiresIn: '1d'
-        })
-        user.password = undefined
-        res.status(201).json({
+        if (!user) {
+            return res.status(401).json({
+                success: false,
+                message: "User or Restaurant not found. Please register.",
+            });
+        }
+        const isMatch = await bcrypt.compare(password, user.password);
+        if (!isMatch) {
+            return res.status(401).json({
+                success: false,
+                message: "Invalid credentials",
+            });
+        }
+
+        const token = jwt.sign({ id: user._id, userType }, process.env.JWT_SECRET, {
+            expiresIn: '1d',
+        });
+
+        user.password = undefined;
+        return res.status(200).json({
+            success: true,
+            message: `${userType === "client" ? "User" : "Restaurant"} login successful!`,
             token,
             user: {
                 id: user._id,
-                userType: user.usertype,
+                userType,
                 userName: user.userName,
-                email: user.email
+                email: user.email,
             },
-            success: true,
-            message: "User Login successfully!",
-        })
+        });
     } catch (error) {
         console.log(error)
         res.status(500).send({

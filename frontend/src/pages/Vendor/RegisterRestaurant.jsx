@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import axiosInstance from "../../../axiosInstance";
+import ToastMessage from "../../components/common/ToastMessage";
 
 const RegisterRestaurant = () => {
     const [formData, setFormData] = useState({
@@ -49,7 +50,12 @@ const RegisterRestaurant = () => {
                 ratingCount: formData.ratingCount,
             });
             localStorage.setItem("RestaurantId", registeredRes.data.newRestaurant._id)
-            console.log("registeredRestuarant", registeredRes);
+
+            await axiosInstance.post("/food/create", {
+                restaurantName: formData.restaurantName,
+                restaurantId: registeredRes.data.newRestaurant._id,
+                menu: []
+            })
         } catch (error) {
             const errorMsg =
                 error.response?.data?.message ||
@@ -72,6 +78,9 @@ const RegisterRestaurant = () => {
             fssaiNumber: "",
             gstNumber: "",
         });
+        const toast = document.getElementById("toast");
+        toast.classList.add("show");
+        setTimeout(() => toast.classList.remove("show"), 3000);
     };
 
     return (
@@ -245,6 +254,7 @@ const RegisterRestaurant = () => {
                 <button type="submit" className="btn btn-primary w-100">
                     Register Restaurant
                 </button>
+                <ToastMessage message="Restaurant registered successfully!" />
             </form>
         </div>
     );

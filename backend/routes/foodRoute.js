@@ -6,7 +6,7 @@ const { createFoodController, getAllFoodsController, getFoodController, getFoodB
 const router = express.Router();
 
 // Create Food - POST
-router.post('/create', authMiddleware, createFoodController)
+router.post('/create', createFoodController)
 
 // Get all Food - GET
 router.get('/getall', getAllFoodsController)

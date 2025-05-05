@@ -8,11 +8,11 @@ const createFoodController = async (req, res) => {
             restaurantName,
             restaurantId,
         } = req.body;
-        console.log("menumenumenu", menu)
-        if (!restaurantName || !restaurantId || !Array.isArray(menu) || menu.length === 0) {
+
+        if (!restaurantName || !restaurantId) {
             return res.status(400).send({
                 success: false,
-                message: "Restaurant details and at least one menu item are required!",
+                message: "Restaurant details are required!",
             });
         }
 
@@ -29,7 +29,6 @@ const createFoodController = async (req, res) => {
             });
             await restaurantFoodMenu.save();
         }
-        console.log("restaurantFoodMenurestaurantFoodMenu", restaurantFoodMenu)
 
         res.status(201).send({
             success: true,

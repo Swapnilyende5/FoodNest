@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import axiosInstance from "../../../axiosInstance";
 import { RestaurantContext } from "../../context/restaurantContext";
 
@@ -77,10 +77,13 @@ const Register = () => {
 
     return (
         <form onSubmit={handleSubmit} className="p-4 rounded-4 bg-white mx-md-auto mt-5 mx-3" style={{ maxWidth: '400px' }} autoComplete="off">
-            <h2 className="mb-2 fw-semibold text-primary title">
-                Register
-            </h2>
-            {errorMessage ? <span className="text-danger small mb-3">{errorMessage}</span> : <p className="text-secondary small mb-3">Signup now and get full access to our app.</p>}
+            <div className="d-flex justify-content-between align-items-center">
+                <h2 className="m-0 fw-semibold text-primary title">
+                    Register
+                </h2>
+                <Link to='/registerRestaurant' className="text-decoration-none"><small>Register Your Restaurant</small></Link>
+            </div>
+            {errorMessage ? <span className="text-danger small my-2">{errorMessage}</span> : <p className="text-secondary small my-2">Signup now and get full access to our app.</p>}
             <div className="form-floating mb-3 w-100">
                 <input onChange={handleChange} name="userName" value={formData.userName} type="text" className="form-control" id="username" placeholder="Username" required autoComplete="off" />
                 <label htmlFor="username">Username</label>

@@ -14,6 +14,7 @@ const MyRestaurantMenu = () => {
         rating: "",
     });
     const [foodsList, setFoodsList] = useState([]);
+    const clickedRestaurant = JSON.parse(localStorage.getItem("restaurantMenu"))
     const RestaurantId = localStorage.getItem("RestaurantId");
 
     const getRestaurant = async () => {
@@ -33,11 +34,11 @@ const MyRestaurantMenu = () => {
     const getAllFood = async () => {
         try {
             const res = await axiosInstance.get("/food/getall");
-            const allFoods = res.data.foods
-            const restaurantFoods = allFoods.find(
-                (item) => item.restaurantId === RestaurantId
+            const allShopFoods = res.data.foods
+            const restaurantFoods = allShopFoods.find(
+                (item) => item.restaurantId === clickedRestaurant.restaurantId
             );
-            setFoodsList(restaurantFoods?.menu || []);
+            setFoodsList(restaurantFoods || []);
         } catch (error) {
             const errorMsg =
                 error.response?.data?.message ||
@@ -55,6 +56,8 @@ const MyRestaurantMenu = () => {
             fetchData();
         }
     }, [RestaurantId]);
+
+    const loginRestaurant = foodsList.restaurantId === restaurantProfile._id
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -88,114 +91,117 @@ const MyRestaurantMenu = () => {
 
     return (
         <div className="container mt-5">
-            <h2>Manage & Add Food</h2>
-
-            <form
-                onSubmit={handleAddFood}
-                className="p-4 border rounded bg-light shadow-sm"
-            >
-                <h4 className="mb-3">Add New Food Item</h4>
-                <input
-                    type="text"
-                    className="form-control mb-3"
-                    placeholder="Food Title"
-                    name="title"
-                    value={newFood.title}
-                    onChange={handleChange}
-                    required
-                />
-                <textarea
-                    className="form-control mb-3"
-                    placeholder="Description"
-                    name="description"
-                    value={newFood.description}
-                    onChange={handleChange}
-                ></textarea>
-                <input
-                    type="number"
-                    className="form-control mb-3"
-                    placeholder="Price ($)"
-                    name="price"
-                    value={newFood.price}
-                    onChange={handleChange}
-                    required
-                />
-                <input
-                    type="text"
-                    className="form-control mb-3"
-                    placeholder="Dish Image Url"
-                    name="imageUrl"
-                    value={newFood.imageUrl}
-                    onChange={handleChange}
-                    required
-                />
-                <input
-                    type="text"
-                    className="form-control mb-3"
-                    placeholder="Tags (comma separated)"
-                    name="foodTags"
-                    value={newFood.foodTags}
-                    onChange={handleChange}
-                />
-                <select
-                    className="form-control mb-3"
-                    name="category"
-                    value={newFood.category}
-                    onChange={handleChange}
+            <h2 className="text-center">{foodsList.restaurantName}</h2>
+            {loginRestaurant &&
+                <form
+                    onSubmit={handleAddFood}
+                    className="p-4 border rounded bg-light shadow-sm"
                 >
-                    <option value="veg">Veg</option>
-                    <option value="non-veg">Non-Veg</option>
-                    <option value="vegan">Vegan</option>
-                </select>
-                <input
-                    type="number"
-                    className="form-control mb-3"
-                    placeholder="Rating (1-5)"
-                    name="rating"
-                    step="0.1"
-                    value={newFood.rating}
-                    onChange={handleChange}
-                />
-                <div className="form-check form-switch mb-3">
+                    <h5 className="mb-3">Add New Food Item</h5>
                     <input
-                        className="form-check-input"
-                        type="checkbox"
-                        name="isAvailable"
-                        checked={newFood.isAvailable}
-                        onChange={(e) =>
-                            setNewFood({ ...newFood, isAvailable: e.target.checked })
-                        }
+                        type="text"
+                        className="form-control mb-3"
+                        placeholder="Food Title"
+                        name="title"
+                        value={newFood.title}
+                        onChange={handleChange}
+                        required
                     />
-                    <label className="form-check-label">Available</label>
-                </div>
-                <button type="submit" className="btn btn-primary w-100">
-                    Add Food
-                </button>
-            </form>
+                    <textarea
+                        className="form-control mb-3"
+                        placeholder="Description"
+                        name="description"
+                        value={newFood.description}
+                        onChange={handleChange}
+                    ></textarea>
+                    <input
+                        type="number"
+                        className="form-control mb-3"
+                        placeholder="Price ($)"
+                        name="price"
+                        value={newFood.price}
+                        onChange={handleChange}
+                        required
+                    />
+                    <input
+                        type="text"
+                        className="form-control mb-3"
+                        placeholder="Dish Image Url"
+                        name="imageUrl"
+                        value={newFood.imageUrl}
+                        onChange={handleChange}
+                        required
+                    />
+                    <input
+                        type="text"
+                        className="form-control mb-3"
+                        placeholder="Tags (comma separated)"
+                        name="foodTags"
+                        value={newFood.foodTags}
+                        onChange={handleChange}
+                    />
+                    <select
+                        className="form-control mb-3"
+                        name="category"
+                        value={newFood.category}
+                        onChange={handleChange}
+                    >
+                        <option value="veg">Veg</option>
+                        <option value="non-veg">Non-Veg</option>
+                        <option value="vegan">Vegan</option>
+                    </select>
+                    <input
+                        type="number"
+                        className="form-control mb-3"
+                        placeholder="Rating (1-5)"
+                        name="rating"
+                        step="0.1"
+                        value={newFood.rating}
+                        onChange={handleChange}
+                    />
+                    <div className="form-check form-switch mb-3">
+                        <input
+                            className="form-check-input"
+                            type="checkbox"
+                            name="isAvailable"
+                            checked={newFood.isAvailable}
+                            onChange={(e) =>
+                                setNewFood({ ...newFood, isAvailable: e.target.checked })
+                            }
+                        />
+                        <label className="form-check-label">Available</label>
+                    </div>
+                    <button type="submit" className="btn btn-primary w-100">
+                        Add Food
+                    </button>
+                </form>
+            }
 
             <div className="mt-5">
                 <h4>Food Items</h4>
-                <div className="row">
-                    {foodsList?.length ? (
-                        foodsList?.map((food) => {
+                <div className="row mb-4">
+                    {foodsList?.menu?.length ? (
+                        foodsList?.menu?.map((food) => {
                             return (
                                 <div className="col-md-3 mt-3 card-wrapper">
                                     <div className="card position-relative">
                                         <img
-                                            src={food.imageUrl}
+                                            src={food && food.imageUrl}
                                             style={{ height: "164px" }}
-                                            alt="Pizza Hut"
+                                            onError={(e) => {
+                                                e.target.onerror = null;
+                                                e.target.src = food && `https://media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,w_300,h_300,c_fit/${food.imageUrl}`
+                                            }}
+                                            alt={food.title}
                                         />
                                         <div className="card-body">
                                             <div className="d-flex justify-content-between">
-                                                <h6 className="card-title fw-semibold">{food.title}</h6>
+                                                <h6 className="card-title fw-semibold w-75">{food.title}</h6>
                                                 <span>⭐ {food.rating}</span>
                                             </div>
                                             <div className="d-flex justify-content-between">
                                                 <p className="card-text">Price: ₹{food.price}</p>
-                                                <p className="mb-1 text-success">
-                                                    {food.isVeg && "VEG"}
-                                                </p>
+                                                <small className="mb-1 text-success">{food.isVeg && "Veg"}</small>
                                             </div>
                                             <div
                                                 className="text-muted"
@@ -207,12 +213,12 @@ const MyRestaurantMenu = () => {
                                             >
                                                 {food.description}
                                             </div>
-                                            <button
+                                            {loginRestaurant && <button
                                                 className="btn btn-danger btn-sm"
                                                 onClick={() => handleDelete(food._id)}
                                             >
                                                 Delete
-                                            </button>
+                                            </button>}
                                         </div>
                                     </div>
                                 </div>
