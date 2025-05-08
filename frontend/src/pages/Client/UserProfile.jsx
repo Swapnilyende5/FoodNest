@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import axiosInstance from "../../../axiosInstance";
 import { Link, useNavigate } from "react-router-dom";
+import Loader from "../../components/utils/Loader";
 import { RestaurantContext } from "../../context/restaurantContext";
 import "./RestaurantMenu.scss";
 
@@ -12,6 +13,7 @@ const UserProfile = () => {
     const [activeTab, setActiveTab] = useState("profile");
     const [editProfile, setEditProfile] = useState(false);
     const [changePassword, setChangePassword] = useState(true);
+    const [isProfileLoading, setIsProfileLoading] = useState(false);
     const [password, setPassword] = useState({
         oldPassword: "",
         newPassword: "",
@@ -21,9 +23,11 @@ const UserProfile = () => {
     useEffect(() => {
         const getUser = async () => {
             try {
+                setIsProfileLoading(true);
                 const res = await axiosInstance.get("/user/getuser");
                 console.log("userdataaaaa", res.data.user);
                 setUserData(res.data.user);
+                setIsProfileLoading(false);
             } catch (error) {
                 const errorMsg =
                     error.response?.data?.message || "Login failed. Please try again.";
@@ -33,8 +37,10 @@ const UserProfile = () => {
         getUser();
         const getRecentOrders = async () => {
             try {
+                setIsProfileLoading(true);
                 const res = await axiosInstance.get("/order/getRecentOrders");
                 setOrders(res.data.recentOrders);
+                setIsProfileLoading(false);
             } catch (error) {
                 const errorMsg =
                     error.response?.data?.message ||
@@ -50,11 +56,13 @@ const UserProfile = () => {
         setEditProfile((prev) => !prev);
         const updateUser = async () => {
             try {
+                setIsProfileLoading(true);
                 const updateResponse = await axiosInstance.put("/user/updateuser", {
                     userName: userData?.userName,
                     address: [userData?.address],
                     phone: userData?.phone,
                 });
+                setIsProfileLoading(false);
                 console.log("userdataaaaa", updateResponse);
             } catch (error) {
                 const errorMsg =
@@ -77,6 +85,7 @@ const UserProfile = () => {
         setChangePassword(false);
         const editPassword = async () => {
             try {
+                setIsProfileLoading(true);
                 const editPasswordResponse = await axiosInstance.put(
                     "/user/updatepassword",
                     {
@@ -84,6 +93,7 @@ const UserProfile = () => {
                         newPassword: password.newPassword,
                     }
                 );
+                setIsProfileLoading(false);
                 setChangePassword(true);
                 setPassword({
                     oldPassword: "",
@@ -116,9 +126,11 @@ const UserProfile = () => {
     const handleDelete = () => {
         const deleteAccount = async () => {
             try {
+                setIsProfileLoading(true);
                 const deleteAccountRes = await axiosInstance.delete(
                     `/user/deleteuser/${userData._id}`
                 );
+                setIsProfileLoading(false);
                 localStorage.removeItem("token");
                 localStorage.removeItem("usertype");
                 setIsAuthenticated(false);
@@ -137,7 +149,9 @@ const UserProfile = () => {
         (item) => item.userId === userData._id
     );
 
-    return (
+    return isProfileLoading ? (
+        <Loader />
+    ) : (
         <section className="container py-5">
             <div className="row">
                 <div className="col-md-4 mb-4">

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axiosInstance from "../../../axiosInstance";
+import Loader from "../../components/utils/Loader";
 
 const MyRestaurantMenu = () => {
     const [restaurantProfile, setRestaurantProfile] = useState({});
@@ -14,6 +15,7 @@ const MyRestaurantMenu = () => {
         rating: "",
     });
     const [foodsList, setFoodsList] = useState([]);
+    const [foodItemsLoading, setFoodItemsLoading] = useState(false);
     const clickedRestaurant = JSON.parse(localStorage.getItem("restaurantMenu"))
     const RestaurantId = localStorage.getItem("RestaurantId");
 
@@ -33,12 +35,14 @@ const MyRestaurantMenu = () => {
 
     const getAllFood = async () => {
         try {
+            setFoodItemsLoading(true)
             const res = await axiosInstance.get("/food/getall");
             const allShopFoods = res.data.foods
             const restaurantFoods = allShopFoods.find(
                 (item) => item.restaurantId === clickedRestaurant.restaurantId
             );
             setFoodsList(restaurantFoods || []);
+            setFoodItemsLoading(false)
         } catch (error) {
             const errorMsg =
                 error.response?.data?.message ||
@@ -130,7 +134,6 @@ const MyRestaurantMenu = () => {
                         name="imageUrl"
                         value={newFood.imageUrl}
                         onChange={handleChange}
-                        required
                     />
                     <input
                         type="text"
@@ -176,21 +179,20 @@ const MyRestaurantMenu = () => {
                     </button>
                 </form>
             }
-
             <div className="mt-5">
                 <h4>Food Items</h4>
-                <div className="row mb-4">
+                {!foodItemsLoading ? <div className="row mb-4">
                     {foodsList?.menu?.length ? (
                         foodsList?.menu?.map((food) => {
                             return (
                                 <div className="col-md-3 mt-3 card-wrapper">
                                     <div className="card position-relative">
                                         <img
-                                            src={food && food.imageUrl}
+                                            src={food.imageUrl ? food.imageUrl : "Invalid Url"}
                                             style={{ height: "164px" }}
                                             onError={(e) => {
                                                 e.target.onerror = null;
-                                                e.target.src = food && `https://media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,w_300,h_300,c_fit/${food.imageUrl}`
+                                                e.target.src = "https://png.pngtree.com/png-vector/20191023/ourmid/pngtree-vector-fast-food-icon-png-image_1856930.jpg"
                                             }}
                                             alt={food.title}
                                         />
@@ -227,7 +229,7 @@ const MyRestaurantMenu = () => {
                     ) : (
                         <p>No food items found</p>
                     )}
-                </div>
+                </div> : <Loader />}
             </div>
         </div>
     );

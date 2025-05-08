@@ -5,15 +5,15 @@ import './FeaturedMenuCard.scss'
 
 const FeaturedMenu = () => {
     const [food, setFood] = useState([])
+    const [originalRestaurants, setOriginalRestaurants] = useState([]);
     const [allRestaurantsList, setAllRestaurantsList] = useState([]);
-    const [isVegFilter, setIsVegFilter] = useState('')
     const [ratingFilter, setRatingFilter] = useState(false)
 
     const getRestaurant = async () => {
         try {
             const allRestaurants = await axiosInstance.get('/restaurant/getall');
+            setOriginalRestaurants(allRestaurants.data.allRestaurants)
             setAllRestaurantsList(allRestaurants.data.allRestaurants);
-            console.log("allRESS", allRestaurants.data.allRestaurants)
         } catch (error) {
             const errorMsg =
                 error.response?.data?.message ||
@@ -44,27 +44,18 @@ const FeaturedMenu = () => {
         localStorage.setItem("restaurantMenu", JSON.stringify(clickedRestaurant));
     }
 
-    const applyFilters = (veg, rating) => {
-        let filtered = [...allRestaurantsList];
-        if (veg) {
-            filtered = filtered.filter((item) => item.isVeg === 'Yes');
-        }
+    const applyFilters = (rating) => {
+        let filtered = [...originalRestaurants];
         if (rating) {
             filtered = filtered.filter((item) => item.rating > 4.0);
         }
         setAllRestaurantsList(filtered);
     };
 
-    const filterIsVeg = () => {
-        const newVegFilter = !isVegFilter;
-        setIsVegFilter(newVegFilter);
-        applyFilters(newVegFilter, ratingFilter);
-    };
-
     const filterHighRating = () => {
         const newRatingFilter = !ratingFilter;
         setRatingFilter(newRatingFilter);
-        applyFilters(isVegFilter, newRatingFilter);
+        applyFilters(newRatingFilter);
     };
 
     return (
@@ -73,8 +64,7 @@ const FeaturedMenu = () => {
                 <h2 className="mb-3 fw-semibold">Fast & Fresh Online Restaurant Orders</h2>
                 <div className="d-flex flex-wrap gap-2 mb-4">
                     <button className={`btn ${ratingFilter ? 'btn-success' : 'btn-outline-secondary'}`} onClick={filterHighRating}>Ratings 4.0+</button>
-
-                    <button className={`btn ${isVegFilter ? 'btn-success' : 'btn-outline-secondary'}`} onClick={filterIsVeg}>Pure Veg</button>
+                    <button disabled className="btn btn-outline-secondary">Pure Veg</button>
                     <button disabled className="btn btn-outline-secondary">Filter</button>
                     <button disabled className="btn btn-outline-secondary">Sort By</button>
                     <button disabled className="btn btn-outline-secondary">Fast Delivery</button>
