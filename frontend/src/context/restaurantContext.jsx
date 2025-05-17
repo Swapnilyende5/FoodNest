@@ -4,9 +4,6 @@ export const RestaurantContext = createContext(null);
 
 const RestaurantContextProvider = ({ children }) => {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
-    const [auth, setAuth] = useState({
-        token: "",
-    });
     const [selectedRes, setSelectedRes] = useState({});
     const [addedItem, setAddedItem] = useState(() => {
         const storedCart = localStorage.getItem("cartitems");
@@ -14,15 +11,16 @@ const RestaurantContextProvider = ({ children }) => {
     });
     const [subTotal, setSubTotal] = useState(0)
     const [addedItemToast, setAddedItemToast] = useState({})
+    const [resIdForFeedback, setResIdForFeedback] = useState("")
 
     useEffect(() => {
-        const total = addedItem.reduce((acc, item) => acc + item.price, 0)
+        const total = addedItem.reduce((acc, item) => acc + item?.price, 0)
         setSubTotal(total)
     }, [addedItem])
 
-    const addToCart = useCallback((item) => {
+    const addToCart = useCallback((item, id) => {
         const cartItemId = Date.now() + Math.random();
-        const updatedCart = [...addedItem, { ...item, cartItemId }]
+        const updatedCart = [...addedItem, { ...item, cartItemId, restaurantId: id }]
         setAddedItem(updatedCart)
         setAddedItemToast(item)
         localStorage.setItem("cartitems", JSON.stringify(updatedCart));
@@ -33,19 +31,20 @@ const RestaurantContextProvider = ({ children }) => {
         }, 3000);
     }, [addedItem])
 
-
     const removeFromCart = useCallback((id) => {
-        const updatedCart = addedItem.filter((item) => item.cartItemId !== id);
+        const updatedCart = addedItem.filter((item) => item?.cartItemId !== id);
         setAddedItem(updatedCart);
         localStorage.setItem("cartitems", JSON.stringify(updatedCart));
     }, [addedItem]);
+
+    const handleFeedback = useCallback((id) => {
+        setResIdForFeedback(id)
+    }, [])
 
     const contextValues = useMemo(
         () => ({
             isAuthenticated,
             setIsAuthenticated,
-            auth,
-            setAuth,
             selectedRes,
             setSelectedRes,
             addedItem,
@@ -53,13 +52,13 @@ const RestaurantContextProvider = ({ children }) => {
             setAddedItem,
             addToCart,
             removeFromCart,
-            subTotal
+            subTotal,
+            handleFeedback,
+            resIdForFeedback
         }),
         [
             isAuthenticated,
             setIsAuthenticated,
-            auth,
-            setAuth,
             selectedRes,
             setSelectedRes,
             addedItem,
@@ -67,7 +66,9 @@ const RestaurantContextProvider = ({ children }) => {
             setAddedItem,
             addToCart,
             removeFromCart,
-            subTotal
+            subTotal,
+            handleFeedback,
+            resIdForFeedback
         ]
     );
 

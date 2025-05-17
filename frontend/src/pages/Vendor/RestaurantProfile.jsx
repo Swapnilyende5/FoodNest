@@ -20,7 +20,7 @@ const RestaurantProfile = () => {
                 const errorMsg =
                     error.response?.data?.message ||
                     "Failed getting Restaurant. Please try again.";
-                console.log("errorMsg", errorMsg);
+                console.log("getRestaurantError", errorMsg);
             }
         };
         getRestaurant();

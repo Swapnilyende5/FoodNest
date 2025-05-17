@@ -20,6 +20,7 @@ const recentOrderSchema = new mongoose.Schema({
                     isAvailable: Boolean,
                     isVeg: Boolean,
                     rating: Number,
+                    restaurantId: String,
                     foodId: {
                         type: mongoose.Schema.Types.ObjectId,
                         ref: "Food",

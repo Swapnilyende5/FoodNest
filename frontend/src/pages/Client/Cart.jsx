@@ -19,7 +19,7 @@ const CartItems = () => {
             } catch (error) {
                 const errorMsg =
                     error.response?.data?.message || "Login failed. Please try again.";
-                console.log("errorMsg", errorMsg);
+                console.log("getUserError", errorMsg);
             }
         };
         getUser();
@@ -30,7 +30,6 @@ const CartItems = () => {
             alert("Cart is empty, Please add something!");
             return;
         }
-
         try {
             await axiosInstance.post("/food/placeorder", {
                 cart: addedItem,
@@ -45,6 +44,13 @@ const CartItems = () => {
                     date: new Date().toLocaleString(),
                 },
             });
+
+            await axiosInstance.post("/past-orders/create", {
+                userId: userData._id,
+                items: addedItem,
+                totalAmount: subTotal
+            })
+
             localStorage.removeItem("cartitems")
             setAddedItem([]);
             const toast = document.getElementById("toast");

@@ -13,12 +13,10 @@ const Register = () => {
         password: '',
         phone: '',
         address: [],
-        usertype: 'client',
         answer: '',
         randomQuestion: '',
     });
     const [errorMessage, setErrorMessage] = useState('')
-
 
     const questions = [
         "What was the name of your first pet?",
@@ -40,16 +38,14 @@ const Register = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const res = await axiosInstance.post('/auth/register', {
+            await axiosInstance.post('/auth/register', {
                 userName: formData.userName,
                 email: formData.email,
                 password: formData.password,
                 phone: formData.phone,
                 address: formData.address,
-                usertype: formData.usertype,
                 answer: formData.answer
             })
-            console.log(res)
         } catch (error) {
             const errorMsg = error.response?.data?.message || "Registration failed. Please try again.";
             setErrorMessage(errorMsg);
@@ -62,7 +58,6 @@ const Register = () => {
             confirmPassword: '',
             phone: '',
             address: [],
-            usertype: 'client',
             answer: '',
             randomQuestion: randomQuestion
         });
@@ -103,15 +98,6 @@ const Register = () => {
             <div className="form-floating mb-3">
                 <input onChange={handleChange} name="phone" value={formData.phone} type="number" className="form-control" id="phone" required placeholder="Phone" />
                 <label htmlFor="phone">Phone</label>
-            </div>
-            <div className="form-floating mb-3">
-                <select name="usertype" value={formData.usertype} required className="form-select" onChange={handleChange}>
-                    <option value="client">Client</option>
-                    <option value="admin">Admin</option>
-                    <option value="vendor">Vendor</option>
-                    <option value="driver">Driver</option>
-                </select>
-                <label>User Type</label>
             </div>
             <div className="form-floating mb-3">
                 <input

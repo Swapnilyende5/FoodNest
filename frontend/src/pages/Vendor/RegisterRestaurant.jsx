@@ -60,7 +60,7 @@ const RegisterRestaurant = () => {
             const errorMsg =
                 error.response?.data?.message ||
                 "Restaurant registration failed. Please try again.";
-            console.log(errorMsg);
+            console.log("RegisterResError", errorMsg);
         }
         setFormData({
             restaurantName: "",
@@ -84,7 +84,7 @@ const RegisterRestaurant = () => {
     };
 
     return (
-        <div className="container mt-5">
+        <div className="container my-5">
             <h2 className="mb-4">Register Your Restaurant</h2>
             <form onSubmit={handleSubmit}>
                 <div className="mb-3">
@@ -254,7 +254,7 @@ const RegisterRestaurant = () => {
                 <button type="submit" className="btn btn-primary w-100">
                     Register Restaurant
                 </button>
-                <ToastMessage message="Restaurant registered successfully!" />
+                <ToastMessage message="Restaurant registered, Please login!" />
             </form>
         </div>
     );

@@ -16,7 +16,7 @@ const MyOrders = () => {
                 const errorMsg =
                     error.response?.data?.message ||
                     "Failed getting user data. Please try again.";
-                console.log("errorMsg", errorMsg);
+                console.log("getUserError", errorMsg);
             }
         };
         const getRecentOrders = async () => {
@@ -27,7 +27,7 @@ const MyOrders = () => {
                 const errorMsg =
                     error.response?.data?.message ||
                     "Failed getting user data. Please try again.";
-                console.log("errorMsg", errorMsg);
+                console.log("getRecentOrdersError", errorMsg);
             }
         };
         getUser();

@@ -22,7 +22,7 @@ const foodSchema = new mongoose.Schema({
             },
             imageUrl: {
                 type: String,
-                default: "https://png.pngtree.com/png-vector/20220623/ourmid/pngtree-food-logo-png-image_5297921.png"
+                default: "https://png.pngtree.com/png-vector/20191023/ourmid/pngtree-vector-fast-food-icon-png-image_1856930.jpg"
             },
             foodTags: {
                 type: String

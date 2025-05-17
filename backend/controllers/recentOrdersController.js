@@ -1,7 +1,7 @@
 const recentOrdersModel = require("../models/recentOrdersModel");
 
 const recentOrder = async (req, res) => {
-    const { userId, newOrder } = req.body; // newOrder has id, items[], total, date
+    const { userId, newOrder } = req.body;
     try {
         let userRecent = await recentOrdersModel.findOne({ userId });
 
@@ -13,7 +13,7 @@ const recentOrder = async (req, res) => {
         } else {
             userRecent.orders.unshift(newOrder);
             if (userRecent.orders.length > 10) {
-                userRecent.orders.pop(); // keep recent 10
+                userRecent.orders.pop();
             }
             await userRecent.save();
         }

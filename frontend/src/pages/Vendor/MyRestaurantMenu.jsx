@@ -16,7 +16,7 @@ const MyRestaurantMenu = () => {
     });
     const [foodsList, setFoodsList] = useState([]);
     const [foodItemsLoading, setFoodItemsLoading] = useState(false);
-    const clickedRestaurant = JSON.parse(localStorage.getItem("restaurantMenu"))
+    const clickedRestaurant = JSON.parse(localStorage.getItem("restaurantMenu"));
     const RestaurantId = localStorage.getItem("RestaurantId");
 
     const getRestaurant = async () => {
@@ -29,25 +29,25 @@ const MyRestaurantMenu = () => {
             const errorMsg =
                 error.response?.data?.message ||
                 "Failed getting Restaurant. Please try again.";
-            console.log("errorMsg", errorMsg);
+            console.log("getRestaurantError", errorMsg);
         }
     };
 
     const getAllFood = async () => {
         try {
-            setFoodItemsLoading(true)
+            setFoodItemsLoading(true);
             const res = await axiosInstance.get("/food/getall");
-            const allShopFoods = res.data.foods
+            const allShopFoods = res.data.foods;
             const restaurantFoods = allShopFoods.find(
                 (item) => item.restaurantId === clickedRestaurant.restaurantId
             );
             setFoodsList(restaurantFoods || []);
-            setFoodItemsLoading(false)
+            setFoodItemsLoading(false);
         } catch (error) {
             const errorMsg =
                 error.response?.data?.message ||
                 "Error fetching Foods. Please try again.";
-            console.log("errorMsg", errorMsg);
+            console.log("getAllFoodError", errorMsg);
         }
     };
 
@@ -61,7 +61,7 @@ const MyRestaurantMenu = () => {
         }
     }, [RestaurantId]);
 
-    const loginRestaurant = foodsList.restaurantId === restaurantProfile._id
+    const loginRestaurant = foodsList.restaurantId === restaurantProfile._id;
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -76,7 +76,16 @@ const MyRestaurantMenu = () => {
                 restaurantId: RestaurantId,
                 menu: [newFood],
             });
-            setNewFood({ title: "", description: "", price: "", imageUrl: "", foodTags: "", category: "veg", isAvailable: true, rating: "" });
+            setNewFood({
+                title: "",
+                description: "",
+                price: "",
+                imageUrl: "",
+                foodTags: "",
+                category: "veg",
+                isAvailable: true,
+                rating: "",
+            });
             await getAllFood();
         } catch (err) {
             console.error("Error adding food:", err);
@@ -96,7 +105,7 @@ const MyRestaurantMenu = () => {
     return (
         <div className="container mt-5">
             <h2 className="text-center">{foodsList.restaurantName}</h2>
-            {loginRestaurant &&
+            {loginRestaurant && (
                 <form
                     onSubmit={handleAddFood}
                     className="p-4 border rounded bg-light shadow-sm"
@@ -178,58 +187,77 @@ const MyRestaurantMenu = () => {
                         Add Food
                     </button>
                 </form>
-            }
+            )}
             <div className="mt-5">
                 <h4>Food Items</h4>
-                {!foodItemsLoading ? <div className="row mb-4">
-                    {foodsList?.menu?.length ? (
-                        foodsList?.menu?.map((food) => {
-                            return (
-                                <div className="col-md-3 mt-3 card-wrapper">
-                                    <div className="card position-relative">
-                                        <img
-                                            src={food.imageUrl ? food.imageUrl : "Invalid Url"}
-                                            style={{ height: "164px" }}
-                                            onError={(e) => {
-                                                e.target.onerror = null;
-                                                e.target.src = "https://png.pngtree.com/png-vector/20191023/ourmid/pngtree-vector-fast-food-icon-png-image_1856930.jpg"
-                                            }}
-                                            alt={food.title}
-                                        />
-                                        <div className="card-body">
-                                            <div className="d-flex justify-content-between">
-                                                <h6 className="card-title fw-semibold w-75">{food.title}</h6>
-                                                <span>⭐ {food.rating}</span>
+                {!foodItemsLoading ? (
+                    <div className="row mb-4">
+                        {foodsList?.menu?.length ? (
+                            foodsList?.menu?.map((food) => {
+                                return (
+                                    <div className="col-md-3 mt-3 card-wrapper">
+                                        <div className="card position-relative">
+                                            {food?.imageUrl?.startsWith("https://") ? (
+                                                <img
+                                                    src={food.imageUrl}
+                                                    style={{ height: "164px" }}
+                                                    alt="food-image"
+                                                />
+                                            ) : (
+                                                <img
+                                                    src={`https://media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,w_300,h_300,c_fit/${food.imageUrl}`}
+                                                    style={{ height: "164px" }}
+                                                    onError={(e) => {
+                                                        e.target.onerror = null;
+                                                        e.target.src =
+                                                            "https://png.pngtree.com/png-vector/20191023/ourmid/pngtree-vector-fast-food-icon-png-image_1856930.jpg";
+                                                    }}
+                                                    alt={food.title}
+                                                />
+                                            )}
+                                            <div className="card-body">
+                                                <div className="d-flex justify-content-between">
+                                                    <h6 className="card-title fw-semibold w-75">
+                                                        {food.title}
+                                                    </h6>
+                                                    <span>⭐ {food.rating}</span>
+                                                </div>
+                                                <div className="d-flex justify-content-between">
+                                                    <p className="card-text">Price: ₹{food.price}</p>
+                                                    <small className="mb-1 text-success">
+                                                        {food.isVeg && "Veg"}
+                                                    </small>
+                                                </div>
+                                                <div
+                                                    className="text-muted"
+                                                    style={{
+                                                        whiteSpace: "nowrap",
+                                                        overflow: "hidden",
+                                                        textOverflow: "ellipsis",
+                                                    }}
+                                                >
+                                                    {food.description}
+                                                </div>
+                                                {loginRestaurant && (
+                                                    <button
+                                                        className="btn btn-danger btn-sm"
+                                                        onClick={() => handleDelete(food._id)}
+                                                    >
+                                                        Delete
+                                                    </button>
+                                                )}
                                             </div>
-                                            <div className="d-flex justify-content-between">
-                                                <p className="card-text">Price: ₹{food.price}</p>
-                                                <small className="mb-1 text-success">{food.isVeg && "Veg"}</small>
-                                            </div>
-                                            <div
-                                                className="text-muted"
-                                                style={{
-                                                    whiteSpace: "nowrap",
-                                                    overflow: "hidden",
-                                                    textOverflow: "ellipsis",
-                                                }}
-                                            >
-                                                {food.description}
-                                            </div>
-                                            {loginRestaurant && <button
-                                                className="btn btn-danger btn-sm"
-                                                onClick={() => handleDelete(food._id)}
-                                            >
-                                                Delete
-                                            </button>}
                                         </div>
                                     </div>
-                                </div>
-                            );
-                        })
-                    ) : (
-                        <p>No food items found</p>
-                    )}
-                </div> : <Loader />}
+                                );
+                            })
+                        ) : (
+                            <p>No food items found</p>
+                        )}
+                    </div>
+                ) : (
+                    <Loader />
+                )}
             </div>
         </div>
     );

@@ -1,10 +1,11 @@
 import React, { useContext, useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { RestaurantContext } from '../../context/restaurantContext';
 import ToastMessage from '../../components/common/ToastMessage';
 import "./RestaurantMenu.scss"
 
 const RestaurantMenu = () => {
-    const { selectedRes, setSelectedRes, addToCart, addedItemToast } = useContext(RestaurantContext)
+    const { selectedRes, setSelectedRes, addToCart, addedItemToast, handleFeedback } = useContext(RestaurantContext)
     const [filterFood, setFilterFood] = useState('')
     const [foodList, setFoodList] = useState(selectedRes?.menu || [])
 
@@ -28,7 +29,10 @@ const RestaurantMenu = () => {
 
     return (
         <div className='w-75 m-auto mt-5'>
-            <h2 className='mb-4 fw-bold'>{selectedRes.restaurantName}</h2>
+            <div className='mb-4 d-flex justify-content-between'>
+                <h2 className='fw-bold m-0'>{selectedRes.restaurantName}</h2>
+                <Link className='btn btn-success' to='/feedback' onClick={() => handleFeedback(selectedRes.restaurantId)}>Add Feedback</Link>
+            </div>
             <div className='text-center mb-5'>
                 <h6 className='text-muted mb-2'>- Menu -</h6>
                 <input className="search-input w-50" onChange={(e) => setFilterFood(e.target.value)} placeholder="Search" />
@@ -62,7 +66,7 @@ const RestaurantMenu = () => {
                                 className="img-fluid rounded mb-2"
                                 style={{ maxHeight: '120px', width: "180px", objectFit: 'cover' }}
                             />
-                            <button className="btn btn-success m-auto d-block w-25 position-absolute" style={{ right: '126px', bottom: '5px' }} onClick={() => addToCart(item)}>ADD</button>
+                            <button className="btn btn-success m-auto d-block w-25 position-absolute" style={{ right: '126px', bottom: '5px' }} onClick={() => addToCart(item, selectedRes.restaurantId)}>ADD</button>
                             <ToastMessage message={`"${addedItemToast.title}" added to the cart`} />
                         </div>
                     </div>

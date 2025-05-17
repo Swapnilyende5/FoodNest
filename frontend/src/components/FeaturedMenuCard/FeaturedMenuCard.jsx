@@ -18,7 +18,7 @@ const FeaturedMenu = () => {
             const errorMsg =
                 error.response?.data?.message ||
                 "Failed getting Restaurant. Please try again.";
-            console.log("errorMsg", errorMsg);
+            console.log("getRestaurantError", errorMsg);
         }
     };
 
@@ -28,7 +28,7 @@ const FeaturedMenu = () => {
             setFood(res.data.foods)
         } catch (error) {
             const errorMsg = error.response?.data?.message || "Login failed. Please try again.";
-            console.log("errorMsg", errorMsg)
+            console.log("getRestaurantError", errorMsg)
         }
     }
     useEffect(() => {
@@ -73,8 +73,8 @@ const FeaturedMenu = () => {
                     <button disabled className="btn btn-outline-secondary">Less than Rs. 300</button>
                 </div>
                 <div className="row g-4">
-                    {allRestaurantsList.map((item) => {
-                        return <ShopCard key={item.id} item={item} handleClick={handleClick} />
+                    {allRestaurantsList.slice().reverse().map((item, index) => {
+                        return <ShopCard key={item.id} item={item} index={index} handleClick={handleClick} />
                     })}
                 </div>
             </div>

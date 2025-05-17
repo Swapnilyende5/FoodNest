@@ -21,12 +21,6 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: [true, 'phone is required'],
     },
-    usertype: {
-        type: String,
-        required: [true, 'user type is required'],
-        default: 'client',
-        enum: ['client', 'admin', 'vendor', 'driver']
-    },
     profile: {
         type: String,
         default: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQIf4R5qPKHPNMyAqV-FjS_OTBB8pfUV29Phg&s"

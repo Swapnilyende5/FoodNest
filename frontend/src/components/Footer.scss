@@ -1,0 +1,23 @@
+.footer-section h3 {
+    font-size: 1.4rem;
+}
+
+.footer-section p,
+.footer-section a {
+    font-size: 0.9rem;
+    text-decoration: none;
+}
+
+.footer-section a:hover {
+    color: #007bff !important;
+}
+
+.footer-bottom {
+    font-size: 0.8rem;
+}
+
+@media (max-width: 768px) {
+    .footer-section {
+        margin-bottom: 30px;
+    }
+}

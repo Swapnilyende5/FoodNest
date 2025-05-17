@@ -30,6 +30,8 @@ app.use('/api/v1/restaurant', require("./routes/restaurantRoute"))
 app.use('/api/v1/category', require("./routes/categoryRoute"))
 app.use('/api/v1/food', require("./routes/foodRoute"))
 app.use('/api/v1/order', require("./routes/recentOrderRoute"))
+app.use('/api/v1/feedback', require("./routes/feedbackRoute"))
+app.use('/api/v1/past-orders', require("./routes/restaurantPastOrders"))
 
 app.get('/', (req, res) => {
     return res.status(200).send("<h1>Welcome to food store server</h1>")

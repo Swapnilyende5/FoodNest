@@ -19,19 +19,17 @@ const UserProfile = () => {
         newPassword: "",
     });
 
-    // Get User Data
     useEffect(() => {
         const getUser = async () => {
             try {
                 setIsProfileLoading(true);
                 const res = await axiosInstance.get("/user/getuser");
-                console.log("userdataaaaa", res.data.user);
                 setUserData(res.data.user);
                 setIsProfileLoading(false);
             } catch (error) {
                 const errorMsg =
                     error.response?.data?.message || "Login failed. Please try again.";
-                console.log("errorMsg", errorMsg);
+                console.log("getUserError", errorMsg);
             }
         };
         getUser();
@@ -45,29 +43,27 @@ const UserProfile = () => {
                 const errorMsg =
                     error.response?.data?.message ||
                     "Failed getting user data. Please try again.";
-                console.log("errorMsg", errorMsg);
+                console.log("getRecentOrdersError", errorMsg);
             }
         };
         getRecentOrders();
     }, []);
 
-    // Edit User Data
     const handleUpdateUser = () => {
         setEditProfile((prev) => !prev);
         const updateUser = async () => {
             try {
                 setIsProfileLoading(true);
-                const updateResponse = await axiosInstance.put("/user/updateuser", {
+                await axiosInstance.put("/user/updateuser", {
                     userName: userData?.userName,
                     address: [userData?.address],
                     phone: userData?.phone,
                 });
                 setIsProfileLoading(false);
-                console.log("userdataaaaa", updateResponse);
             } catch (error) {
                 const errorMsg =
                     error.response?.data?.message || "Failed Updating user.";
-                console.log("errorMsg", errorMsg);
+                console.log("updateUserError", errorMsg);
             }
         };
         updateUser();
@@ -80,7 +76,6 @@ const UserProfile = () => {
         }));
     };
 
-    // Edit User Password
     const handleChangePass = () => {
         setChangePassword(false);
         const editPassword = async () => {
@@ -108,7 +103,7 @@ const UserProfile = () => {
                 });
                 const errorMsg =
                     error.response?.data?.message || "Failed Updating User Password.";
-                console.log("errorMsg", errorMsg);
+                console.log("editPasswordError", errorMsg);
             }
         };
         password.oldPassword && password.newPassword && editPassword();
@@ -122,7 +117,6 @@ const UserProfile = () => {
         }));
     };
 
-    // Delete Account
     const handleDelete = () => {
         const deleteAccount = async () => {
             try {
