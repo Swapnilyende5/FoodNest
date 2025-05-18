@@ -83,8 +83,8 @@ const FeaturedMenu = () => {
                 </div>
                 {isCardsLoading ? <Loader /> :
                     <div className="row g-4">
-                        {allRestaurants.map((item, index) => {
-                            return <ShopCard key={item.id} item={item} index={index} handleClick={handleClick} />
+                        {allRestaurants.map((item) => {
+                            return <ShopCard key={item.id} item={item} RestaurantId={RestaurantId} handleClick={handleClick} />
                         })}
                     </div>}
             </div>

@@ -2,7 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import "../FeaturedMenuCard/FeaturedMenuCard.scss";
 
-const ShopCard = ({ item, handleClick, index }) => {
+const ShopCard = ({ item, handleClick, RestaurantId }) => {
     const userType = localStorage.getItem("usertype");
     const {
         restaurantName,
@@ -13,7 +13,6 @@ const ShopCard = ({ item, handleClick, index }) => {
         address,
         _id,
     } = item || {};
-
 
     return (
         <div
@@ -28,7 +27,7 @@ const ShopCard = ({ item, handleClick, index }) => {
                         className="card-img"
                         alt="Pizza Hut"
                     />
-                    {index === 0 && userType === "vendor" && (
+                    {_id === RestaurantId && userType === "vendor" && (
                         <>
                             <span className="bg-success text-white py-1 text-center">
                                 Add Food
@@ -44,7 +43,7 @@ const ShopCard = ({ item, handleClick, index }) => {
                             </small>
                         </div>
                         <p className="mb-1 multi-line-truncate">{address}</p>
-                        {index !== 0 && userType === "vendor" && <p className="text-white py-3 m-0 text-center"></p>}
+                        {_id !== RestaurantId && userType === "vendor" && <p className="text-white py-3 m-0 text-center"></p>}
                         <small className="text-success">
                             {delivery ? "Delivery Available" : "Delivery Not Available"}
                         </small>

@@ -14,9 +14,15 @@ const RestaurantContextProvider = ({ children }) => {
     const [addedItemToast, setAddedItemToast] = useState({})
     const [resIdForFeedback, setResIdForFeedback] = useState("")
     const [userDetails, setUserDetails] = useState({})
+    const [token, setToken] = useState(localStorage.getItem("token") || null);
 
     useEffect(() => {
         const getUserData = async () => {
+            if (!token) {
+                setUserDetails({});
+                return;
+            }
+
             try {
                 const getUser = await axiosInstance.get("/user/getuser");
                 setUserDetails(getUser.data.user)
@@ -28,7 +34,7 @@ const RestaurantContextProvider = ({ children }) => {
             }
         }
         getUserData();
-    }, [])
+    }, [token])
 
     useEffect(() => {
         const total = addedItem.reduce((acc, item) => acc + item?.price, 0)
@@ -74,6 +80,7 @@ const RestaurantContextProvider = ({ children }) => {
             resIdForFeedback,
             userDetails,
             setUserDetails,
+            setToken
         }),
         [
             isAuthenticated,
@@ -90,6 +97,7 @@ const RestaurantContextProvider = ({ children }) => {
             resIdForFeedback,
             userDetails,
             setUserDetails,
+            setToken
         ]
     );
 

@@ -49,7 +49,6 @@ const RegisterRestaurant = () => {
                 rating: formData.rating,
                 ratingCount: formData.ratingCount,
             });
-            localStorage.setItem("RestaurantId", registeredRes.data.newRestaurant._id)
 
             await axiosInstance.post("/food/create", {
                 restaurantName: formData.restaurantName,

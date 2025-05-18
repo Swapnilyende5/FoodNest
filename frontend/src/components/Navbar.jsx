@@ -3,7 +3,7 @@ import { RestaurantContext } from "../context/restaurantContext";
 import { useContext, useRef } from "react";
 
 const Navbar = () => {
-    const { isAuthenticated, setIsAuthenticated, addedItem } = useContext(RestaurantContext);
+    const { isAuthenticated, setIsAuthenticated, addedItem, setToken } = useContext(RestaurantContext);
     const userType = localStorage.getItem("usertype");
     const navigate = useNavigate();
     const location = useLocation();
@@ -11,7 +11,10 @@ const Navbar = () => {
 
     const handleLogout = () => {
         localStorage.removeItem("token");
+        setToken(null);
         localStorage.removeItem("usertype");
+        localStorage.removeItem("RestaurantId");
+        localStorage.removeItem("restaurantMenu");
         setIsAuthenticated(false);
         collapseNavbar();
         navigate("/login");

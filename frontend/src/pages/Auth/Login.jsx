@@ -8,7 +8,7 @@ const Login = () => {
         email: "",
         password: "",
     });
-    const { setIsAuthenticated } = useContext(RestaurantContext);
+    const { setIsAuthenticated, setToken } = useContext(RestaurantContext);
     const [errorMessage, setErrorMessage] = useState("");
     const [redirect, setRedirect] = useState(false);
     const [testCreds, setTestCreds] = useState(false);
@@ -26,8 +26,10 @@ const Login = () => {
                 password: loginData.password,
             });
             localStorage.setItem("token", res.data.token);
+            setToken(res.data.token)
             localStorage.setItem("usertype", res.data.user.userType);
             setIsAuthenticated(true);
+            res.data.user.userType === "vendor" && localStorage.setItem("RestaurantId", res.data.user.id)
             setRedirect(true);
         } catch (error) {
             const errorMsg =

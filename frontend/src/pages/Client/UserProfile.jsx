@@ -129,7 +129,7 @@ const UserProfile = () => {
         (item) => item.userId === userDetails._id
     );
 
-    return isProfileLoading ? (
+    return isProfileLoading && userDetails ? (
         <Loader />
     ) : (
         <section className="container py-5">
