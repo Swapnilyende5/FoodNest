@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext } from "react";
 import { RestaurantContext } from "../../context/restaurantContext";
 import ToastMessage from "../../components/common/ToastMessage";
 import axiosInstance from "../../../axiosInstance";
@@ -6,24 +6,9 @@ import { useNavigate } from "react-router-dom";
 import "./Cart.scss";
 
 const CartItems = () => {
-    const { addedItem, setAddedItem, removeFromCart, subTotal } =
+    const { userDetails, addedItem, setAddedItem, removeFromCart, subTotal } =
         useContext(RestaurantContext);
-    const [userData, setUserData] = useState({});
     const navigate = useNavigate();
-
-    useEffect(() => {
-        const getUser = async () => {
-            try {
-                const res = await axiosInstance.get("/user/getuser");
-                setUserData(res.data.user);
-            } catch (error) {
-                const errorMsg =
-                    error.response?.data?.message || "Login failed. Please try again.";
-                console.log("getUserError", errorMsg);
-            }
-        };
-        getUser();
-    }, []);
 
     const placeOrder = async () => {
         if (!addedItem.length) {
@@ -36,7 +21,7 @@ const CartItems = () => {
             });
 
             await axiosInstance.post("/order/recentOrder", {
-                userId: userData._id,
+                userId: userDetails._id,
                 newOrder: {
                     orderId: Date.now(),
                     items: addedItem,
@@ -46,7 +31,7 @@ const CartItems = () => {
             });
 
             await axiosInstance.post("/past-orders/create", {
-                userId: userData._id,
+                userId: userDetails._id,
                 items: addedItem,
                 totalAmount: subTotal
             })

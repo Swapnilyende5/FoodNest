@@ -4,19 +4,15 @@ import ToastMessage from "../../components/common/ToastMessage";
 import { RestaurantContext } from "../../context/restaurantContext";
 
 const AddFeedback = () => {
-    const { resIdForFeedback } = useContext(RestaurantContext)
-
+    const { userDetails, resIdForFeedback } = useContext(RestaurantContext)
     const [rating, setRating] = useState(5);
     const [comment, setComment] = useState("");
     const [errorMsg, setErrorMsg] = useState("");
-
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const getUser = await axiosInstance.get("/user/getuser");
-            const username = getUser.data.user.userName
-            const useremail = getUser.data.user.email
-
+            const username = userDetails.userName
+            const useremail = userDetails.email
             const res = await axiosInstance.post("/feedback/addfeedback", {
                 restaurantId: resIdForFeedback,
                 username,

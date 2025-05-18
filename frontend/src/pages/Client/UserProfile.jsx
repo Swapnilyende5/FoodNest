@@ -6,9 +6,8 @@ import { RestaurantContext } from "../../context/restaurantContext";
 import "./RestaurantMenu.scss";
 
 const UserProfile = () => {
-    const { setIsAuthenticated } = useContext(RestaurantContext);
+    const { userDetails, setUserDetails, setIsAuthenticated } = useContext(RestaurantContext);
     const navigate = useNavigate();
-    const [userData, setUserData] = useState({});
     const [order, setOrders] = useState([]);
     const [activeTab, setActiveTab] = useState("profile");
     const [editProfile, setEditProfile] = useState(false);
@@ -20,19 +19,6 @@ const UserProfile = () => {
     });
 
     useEffect(() => {
-        const getUser = async () => {
-            try {
-                setIsProfileLoading(true);
-                const res = await axiosInstance.get("/user/getuser");
-                setUserData(res.data.user);
-                setIsProfileLoading(false);
-            } catch (error) {
-                const errorMsg =
-                    error.response?.data?.message || "Login failed. Please try again.";
-                console.log("getUserError", errorMsg);
-            }
-        };
-        getUser();
         const getRecentOrders = async () => {
             try {
                 setIsProfileLoading(true);
@@ -55,9 +41,9 @@ const UserProfile = () => {
             try {
                 setIsProfileLoading(true);
                 await axiosInstance.put("/user/updateuser", {
-                    userName: userData?.userName,
-                    address: [userData?.address],
-                    phone: userData?.phone,
+                    userName: userDetails?.userName,
+                    address: [userDetails?.address],
+                    phone: userDetails?.phone,
                 });
                 setIsProfileLoading(false);
             } catch (error) {
@@ -70,7 +56,7 @@ const UserProfile = () => {
     };
     const handleChange = (e) => {
         const { name, value } = e.target;
-        setUserData((prev) => ({
+        setUserDetails((prev) => ({
             ...prev,
             [name]: value,
         }));
@@ -122,7 +108,7 @@ const UserProfile = () => {
             try {
                 setIsProfileLoading(true);
                 const deleteAccountRes = await axiosInstance.delete(
-                    `/user/deleteuser/${userData._id}`
+                    `/user/deleteuser/${userDetails._id}`
                 );
                 setIsProfileLoading(false);
                 localStorage.removeItem("token");
@@ -140,7 +126,7 @@ const UserProfile = () => {
     };
 
     const ordersByCurrentUser = order?.find(
-        (item) => item.userId === userData._id
+        (item) => item.userId === userDetails._id
     );
 
     return isProfileLoading ? (
@@ -152,18 +138,18 @@ const UserProfile = () => {
                     <div className="card shadow-sm border-0 overflow-hidden">
                         <div className="bg-success text-white text-center py-4">
                             <img
-                                src={userData?.profile}
+                                src={userDetails?.profile}
                                 alt="Profile"
                                 className="rounded-circle border border-3 border-white mb-2"
                                 width="100"
                                 height="100"
                             />
-                            <h5 className="mb-0">{userData.userName}</h5>
-                            <small>{userData.email}</small>
+                            <h5 className="mb-0">{userDetails.userName}</h5>
+                            <small>{userDetails.email}</small>
                         </div>
                         <div className="card-body text-center">
                             <p className="text-muted small mb-2">
-                                Joined: {userData?.createdAt?.slice(0, 10)}
+                                Joined: {userDetails?.createdAt?.slice(0, 10)}
                             </p>
 
                             {!editProfile ? (
@@ -307,18 +293,18 @@ const UserProfile = () => {
                                                 className="search-input col-sm-8"
                                                 type="text"
                                                 name="userName"
-                                                value={userData.userName}
+                                                value={userDetails.userName}
                                                 onChange={handleChange}
                                             />
                                         ) : (
                                             <div className="col-sm-8 fw-medium">
-                                                {userData.userName}
+                                                {userDetails.userName}
                                             </div>
                                         )}
                                     </div>
                                     <div className="row mb-2">
                                         <div className="col-sm-4 text-muted">Email:</div>
-                                        <div className="col-sm-8 fw-medium">{userData.email}</div>
+                                        <div className="col-sm-8 fw-medium">{userDetails.email}</div>
                                     </div>
                                     <div className="row mb-2">
                                         <div className="col-sm-4 text-muted">Phone:</div>
@@ -327,11 +313,11 @@ const UserProfile = () => {
                                                 className="search-input col-sm-8"
                                                 type="number"
                                                 name="phone"
-                                                value={userData.phone}
+                                                value={userDetails.phone}
                                                 onChange={handleChange}
                                             />
                                         ) : (
-                                            <div className="col-sm-8 fw-medium">{userData.phone}</div>
+                                            <div className="col-sm-8 fw-medium">{userDetails.phone}</div>
                                         )}
                                     </div>
                                     <div className="row mb-2">
@@ -341,12 +327,12 @@ const UserProfile = () => {
                                                 className="search-input col-sm-8"
                                                 type="text"
                                                 name="address"
-                                                value={userData.address}
+                                                value={userDetails.address}
                                                 onChange={handleChange}
                                             />
                                         ) : (
                                             <div className="col-sm-8 fw-medium">
-                                                {userData.address}
+                                                {userDetails.address}
                                             </div>
                                         )}
                                     </div>

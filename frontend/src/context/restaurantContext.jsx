@@ -1,4 +1,5 @@
 import { createContext, useCallback, useEffect, useMemo, useState } from "react";
+import axiosInstance from "../../axiosInstance";
 
 export const RestaurantContext = createContext(null);
 
@@ -12,6 +13,22 @@ const RestaurantContextProvider = ({ children }) => {
     const [subTotal, setSubTotal] = useState(0)
     const [addedItemToast, setAddedItemToast] = useState({})
     const [resIdForFeedback, setResIdForFeedback] = useState("")
+    const [userDetails, setUserDetails] = useState({})
+
+    useEffect(() => {
+        const getUserData = async () => {
+            try {
+                const getUser = await axiosInstance.get("/user/getuser");
+                setUserDetails(getUser.data.user)
+            } catch (error) {
+                const errorMsg =
+                    error.response?.data?.message ||
+                    "Failed getting user data. Please try again.";
+                console.log("getUserError", errorMsg);
+            }
+        }
+        getUserData();
+    }, [])
 
     useEffect(() => {
         const total = addedItem.reduce((acc, item) => acc + item?.price, 0)
@@ -54,7 +71,9 @@ const RestaurantContextProvider = ({ children }) => {
             removeFromCart,
             subTotal,
             handleFeedback,
-            resIdForFeedback
+            resIdForFeedback,
+            userDetails,
+            setUserDetails,
         }),
         [
             isAuthenticated,
@@ -68,7 +87,9 @@ const RestaurantContextProvider = ({ children }) => {
             removeFromCart,
             subTotal,
             handleFeedback,
-            resIdForFeedback
+            resIdForFeedback,
+            userDetails,
+            setUserDetails,
         ]
     );
 

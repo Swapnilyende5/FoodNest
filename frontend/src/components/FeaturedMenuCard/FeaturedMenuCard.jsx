@@ -5,6 +5,7 @@ import './FeaturedMenuCard.scss'
 import Loader from '../utils/Loader';
 
 const FeaturedMenu = () => {
+    const RestaurantId = localStorage.getItem("RestaurantId");
     const [food, setFood] = useState([])
     const [originalRestaurants, setOriginalRestaurants] = useState([]);
     const [allRestaurantsList, setAllRestaurantsList] = useState([]);
@@ -62,6 +63,10 @@ const FeaturedMenu = () => {
         applyFilters(newRatingFilter);
     };
 
+    const allRestaurants = allRestaurantsList.sort((a, b) => {
+        return a._id === RestaurantId ? -1 : b._id === RestaurantId ? 1 : 0;
+    });
+
     return (
         <div className='bg-white' id='ordernow'>
             <div className="container py-5">
@@ -78,7 +83,7 @@ const FeaturedMenu = () => {
                 </div>
                 {isCardsLoading ? <Loader /> :
                     <div className="row g-4">
-                        {allRestaurantsList.slice().reverse().map((item, index) => {
+                        {allRestaurants.map((item, index) => {
                             return <ShopCard key={item.id} item={item} index={index} handleClick={handleClick} />
                         })}
                     </div>}

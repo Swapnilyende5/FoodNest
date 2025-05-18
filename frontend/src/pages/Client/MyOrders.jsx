@@ -1,24 +1,14 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import axiosInstance from "../../../axiosInstance";
 import Loader from "../../components/utils/Loader";
+import { RestaurantContext } from "../../context/restaurantContext";
 
 const MyOrders = () => {
+    const { userDetails } = useContext(RestaurantContext)
     const [orders, setOrders] = useState([]);
-    const [user, setUser] = useState({});
     const [deliveryStatus, setDeliveryStatus] = useState("Preparing");
 
     useEffect(() => {
-        const getUser = async () => {
-            try {
-                const res = await axiosInstance.get("/user/getuser");
-                setUser(res.data.user);
-            } catch (error) {
-                const errorMsg =
-                    error.response?.data?.message ||
-                    "Failed getting user data. Please try again.";
-                console.log("getUserError", errorMsg);
-            }
-        };
         const getRecentOrders = async () => {
             try {
                 const res = await axiosInstance.get("/order/getRecentOrders");
@@ -30,7 +20,6 @@ const MyOrders = () => {
                 console.log("getRecentOrdersError", errorMsg);
             }
         };
-        getUser();
         getRecentOrders();
 
     }, []);
@@ -39,7 +28,7 @@ const MyOrders = () => {
         setDeliveryStatus("Delivered");
     }, 60000);
 
-    const ordersByCurrentUser = orders.find((item) => item.userId === user._id)
+    const ordersByCurrentUser = orders.find((item) => item.userId === userDetails._id)
 
     const recentOrderCard = (item, index) => {
         const { items, orderId, total, date } = item;
@@ -83,10 +72,10 @@ const MyOrders = () => {
                             <p className="mb-1">
                                 <strong>Delivery To:</strong>
                             </p>
-                            <p className="mb-0">{user.userName && user?.userName}</p>
-                            <p className="mb-0">{user.address && user?.address[0]}</p>
+                            <p className="mb-0">{userDetails.userName && userDetails?.userName}</p>
+                            <p className="mb-0">{userDetails.address && userDetails?.address[0]}</p>
                             <p className="mb-0">
-                                <i className="bi bi-telephone" /> {user.phone && user.phone}
+                                <i className="bi bi-telephone" /> {userDetails.phone && userDetails.phone}
                             </p>
                         </div>
                     </div>
