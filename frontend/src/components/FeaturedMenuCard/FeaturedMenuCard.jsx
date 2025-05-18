@@ -2,12 +2,14 @@ import { useEffect, useState } from 'react';
 import axiosInstance from '../../../axiosInstance';
 import ShopCard from '../common/ShopCard';
 import './FeaturedMenuCard.scss'
+import Loader from '../utils/Loader';
 
 const FeaturedMenu = () => {
     const [food, setFood] = useState([])
     const [originalRestaurants, setOriginalRestaurants] = useState([]);
     const [allRestaurantsList, setAllRestaurantsList] = useState([]);
     const [ratingFilter, setRatingFilter] = useState(false)
+    const [isCardsLoading, setIsCardsLoading] = useState(false);
 
     const getRestaurant = async () => {
         try {
@@ -33,8 +35,10 @@ const FeaturedMenu = () => {
     }
     useEffect(() => {
         const fetchAllData = async () => {
+            setIsCardsLoading(true)
             await getRestaurant()
             await getAllFoodData()
+            setIsCardsLoading(false)
         }
         fetchAllData();
     }, [])
@@ -72,11 +76,12 @@ const FeaturedMenu = () => {
                     <button disabled className="btn btn-outline-secondary">Rs. 300–Rs. 600</button>
                     <button disabled className="btn btn-outline-secondary">Less than Rs. 300</button>
                 </div>
-                <div className="row g-4">
-                    {allRestaurantsList.slice().reverse().map((item, index) => {
-                        return <ShopCard key={item.id} item={item} index={index} handleClick={handleClick} />
-                    })}
-                </div>
+                {isCardsLoading ? <Loader /> :
+                    <div className="row g-4">
+                        {allRestaurantsList.slice().reverse().map((item, index) => {
+                            return <ShopCard key={item.id} item={item} index={index} handleClick={handleClick} />
+                        })}
+                    </div>}
             </div>
         </div>
     );

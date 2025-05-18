@@ -1,22 +1,22 @@
 import React, { useContext, useEffect, useState } from "react";
 import axiosInstance from "../../../axiosInstance";
 import { RestaurantContext } from "../../context/restaurantContext";
+import Loader from "../../components/utils/Loader";
 
 const PastOrders = () => {
     const { addedItem, subTotal } = useContext(RestaurantContext);
     const [resPastOrders, setResPastOrders] = useState();
+    const [isPastOrdersLoading, setIsPastOrdersLoading] = useState(false);
     const RestaurantId = localStorage.getItem("RestaurantId");
 
     useEffect(() => {
         const getUser = async () => {
             try {
+                setIsPastOrdersLoading(true)
                 const restaurantPastOrders = await axiosInstance.get(
                     "/past-orders/getAll"
                 );
-                console.log(
-                    "restaurantPastOrdersResponse",
-                    restaurantPastOrders.data.allPastOrders
-                );
+                setIsPastOrdersLoading(false)
                 setResPastOrders(restaurantPastOrders.data.allPastOrders);
             } catch (error) {
                 const errorMsg =
@@ -40,33 +40,34 @@ const PastOrders = () => {
             {pastOrderByRestaurant?.length === 0 ? (
                 <div className="alert alert-info">No past orders available.</div>
             ) : (
-                <div className="row">
-                    {pastOrderByRestaurant?.map((order) => (
-                        <div className="col-md-6 mb-4" key={order?.cartItemId}>
-                            <div className="d-flex p-3 shadow-sm">
-                                <div className="me-3">
-                                    <img src={order?.imageUrl} width="100px" alt="" />
-                                </div>
-                                <div>
-                                    <p>
-                                        <strong>Title:</strong> {order?.title}
-                                    </p>
-                                    <p>
-                                        <strong>Description:</strong> {order?.description}
-                                    </p>
-                                    <p className="m-0">
-                                        <strong>Price:</strong> ₹{order?.price}
-                                    </p>
-                                    <p className="m-0">
-                                        <strong>Date:</strong>{" "}
-                                        {new Date(resPastOrders[0].orderedAt).toLocaleString()}
-                                    </p>
+                isPastOrdersLoading ? <Loader /> :
+                    <div className="row">
+                        {pastOrderByRestaurant?.map((order) => (
+                            <div className="col-md-6 mb-4" key={order?.cartItemId}>
+                                <div className="d-flex p-3 shadow-sm">
+                                    <div className="me-3">
+                                        <img src={order?.imageUrl} width="100px" alt="" />
+                                    </div>
+                                    <div>
+                                        <p>
+                                            <strong>Title:</strong> {order?.title}
+                                        </p>
+                                        <p>
+                                            <strong>Description:</strong> {order?.description}
+                                        </p>
+                                        <p className="m-0">
+                                            <strong>Price:</strong> ₹{order?.price}
+                                        </p>
+                                        <p className="m-0">
+                                            <strong>Date:</strong>{" "}
+                                            {new Date(resPastOrders[0].orderedAt).toLocaleString()}
+                                        </p>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    ))}
-                    <h4 className="text-end mb-5">Subtotal: ₹{total}</h4>
-                </div>
+                        ))}
+                        <h4 className="text-end mb-5">Subtotal: ₹{total}</h4>
+                    </div>
             )}
         </div>
     );
