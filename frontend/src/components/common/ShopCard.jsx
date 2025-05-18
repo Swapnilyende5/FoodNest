@@ -17,7 +17,7 @@ const ShopCard = ({ item, handleClick, index }) => {
 
     return (
         <div
-            className="col-md-3 card-wrapper h-75"
+            className="col-lg-3 col-md-4 card-wrapper h-75"
             onClick={() => handleClick(_id)}
         >
             <Link to={`/restaurant/${restaurantName}`}>
@@ -32,7 +32,7 @@ const ShopCard = ({ item, handleClick, index }) => {
                         <>
                             <span className="bg-success text-white py-1 text-center">
                                 Add Food
-                                <i class="ms-2 bi bi-pencil-square"></i>
+                                <i className="ms-2 bi bi-pencil-square"></i>
                             </span>
                         </>
                     )}
@@ -44,7 +44,7 @@ const ShopCard = ({ item, handleClick, index }) => {
                             </small>
                         </div>
                         <p className="mb-1 multi-line-truncate">{address}</p>
-                        {index !== 0 && userType === "vendor" && <p className="text-white py-3 text-center"></p>}
+                        {index !== 0 && userType === "vendor" && <p className="text-white py-3 m-0 text-center"></p>}
                         <small className="text-success">
                             {delivery ? "Delivery Available" : "Delivery Not Available"}
                         </small>

@@ -32,11 +32,11 @@ const PastOrders = () => {
         (order) =>
             order.items?.filter((item) => item.restaurantId === RestaurantId) || []
     );
+    const total = pastOrderByRestaurant?.reduce((sum, item) => sum + item.price, 0);
 
     return (
         <div className="container mt-4">
-            <h2 className="mb-4">Past Orders</h2>
-
+            <h2 className="my-5">Past Orders</h2>
             {pastOrderByRestaurant?.length === 0 ? (
                 <div className="alert alert-info">No past orders available.</div>
             ) : (
@@ -48,10 +48,10 @@ const PastOrders = () => {
                                     <img src={order?.imageUrl} width="100px" alt="" />
                                 </div>
                                 <div>
-                                    <p className="m-0">
+                                    <p>
                                         <strong>Title:</strong> {order?.title}
                                     </p>
-                                    <p className="m-0">
+                                    <p>
                                         <strong>Description:</strong> {order?.description}
                                     </p>
                                     <p className="m-0">
@@ -65,6 +65,7 @@ const PastOrders = () => {
                             </div>
                         </div>
                     ))}
+                    <h4 className="text-end mb-5">Subtotal: ₹{total}</h4>
                 </div>
             )}
         </div>

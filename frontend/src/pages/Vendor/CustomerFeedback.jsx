@@ -31,7 +31,7 @@ const CustomerFeedback = () => {
             ) : (
                 <div className="row">
                     {allFeedbacks.map((feedback, index) => (
-                        <div className="col-md-4 mb-4" key={index}>
+                        <div className="col-lg-4 col-md-6 mb-4" key={index}>
                             <div className="card shadow-sm h-100">
                                 <div className="card-body">
                                     <div className="d-flex mb-2 align-items-center justify-content-between">

@@ -28,23 +28,31 @@ const Hero = () => {
                     </p>
                     <div className="d-flex gap-3">
                         {userType === "client" || userType === null ? (
-                            <a href="#partnerus" className="btn btn-lg btn-dark text-light">
-                                Partner With Us
-                            </a>
+                            <>
+                                <a href="#partnerus" className="btn btn-lg btn-dark text-light">
+                                    Partner With Us
+                                </a>
+                                <a
+                                    href="#ordernow"
+                                    className="btn btn-lg btn-outline-dark d-flex align-items-center"
+                                >
+                                    Order Now
+                                </a>
+                            </>
                         ) : (
-                            <Link
-                                to="/restaurant/manage-menu"
-                                className="btn btn-lg btn-dark text-light"
-                            >
-                                Add Food Items
-                            </Link>
+                            <>
+                                <a href="#ordernow" className="btn btn-lg btn-dark text-light">
+                                    Add Food Items
+                                </a>
+                                <Link
+                                    to="/restaurant/feedback"
+                                    className="btn btn-lg btn-outline-dark"
+                                >
+                                    Feedbacks
+                                </Link>
+                            </>
                         )}
-                        <a
-                            href="#ordernow"
-                            className="btn btn-lg btn-outline-dark d-flex align-items-center"
-                        >
-                            Order Now
-                        </a>
+
                     </div>
                 </div>
             </div>

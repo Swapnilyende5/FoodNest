@@ -1,20 +1,28 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { RestaurantContext } from "../context/restaurantContext";
-import { useContext } from "react";
+import { useContext, useRef } from "react";
 
 const Navbar = () => {
-    const { isAuthenticated, setIsAuthenticated, addedItem } =
-        useContext(RestaurantContext);
+    const { isAuthenticated, setIsAuthenticated, addedItem } = useContext(RestaurantContext);
     const userType = localStorage.getItem("usertype");
     const navigate = useNavigate();
     const location = useLocation();
+    const collapseRef = useRef(null);
 
     const handleLogout = () => {
         localStorage.removeItem("token");
         localStorage.removeItem("usertype");
         setIsAuthenticated(false);
+        collapseNavbar();
         navigate("/login");
     };
+
+    const collapseNavbar = () => {
+        if (collapseRef.current && collapseRef.current.classList.contains("show")) {
+            collapseRef.current.classList.remove("show");
+        }
+    };
+
     const guestUser = [
         { path: "/", label: "Home" },
         { path: "/login", label: "Login" },
@@ -22,15 +30,9 @@ const Navbar = () => {
     ];
     const vendorUser = [
         { path: "/", label: "Home" },
-        {
-            path: "/restaurant/manage-menu",
-            label: "Manage Menu",
-        },
+        { path: "/restaurant/manage-menu", label: "Manage Menu" },
         { path: "/restaurant/orders", label: "Orders" },
-        {
-            path: "/restaurant/feedback",
-            label: "Customer Feedback",
-        },
+        { path: "/restaurant/feedback", label: "Customer Feedback" },
         { path: "/restaurant/profile", label: "Profile" },
     ];
     const clientUser = [
@@ -47,64 +49,49 @@ const Navbar = () => {
         { path: "/admin/settings", label: "Settings" },
     ];
 
+    const renderLinks = (userList) =>
+        userList.map((item, index) => (
+            <li className="nav-item" key={index}>
+                <Link
+                    className={`nav-link ${location.pathname === item.path ? "active text-danger" : ""}`}
+                    to={item.path}
+                    onClick={collapseNavbar}
+                >
+                    {item.label}
+                    {item.label === "Cart" && (
+                        <span className="bg-danger text-white rounded px-2 py-1 ms-1">
+                            {addedItem?.length || 0}
+                        </span>
+                    )}
+                </Link>
+            </li>
+        ));
+
     return (
-        <nav
-            className="navbar navbar-expand-lg w-100 m-auto"
-            style={{ backdropFilter: "blur(8px)", zIndex: 1050 }}
-        >
-            <div className="container px-4">
-                <Link className="navbar-brand fw-bold p-0" to="/">
-                    <img src="/foodnest.png" width="150px" alt="main-logo" />
+        <nav className="navbar navbar-expand-lg bg-white shadow-sm fixed-top">
+            <div className="container">
+                <Link className="navbar-brand fw-bold" to="/" onClick={collapseNavbar}>
+                    <img src="/foodnest.png" width="150px" alt="FoodNest Logo" />
                 </Link>
                 <button
                     className="navbar-toggler"
                     type="button"
                     data-bs-toggle="collapse"
                     data-bs-target="#navbarNav"
+                    aria-controls="navbarNav"
+                    aria-expanded="false"
+                    aria-label="Toggle navigation"
                 >
                     <span className="navbar-toggler-icon"></span>
                 </button>
-                <div className="collapse navbar-collapse" id="navbarNav">
-                    <ul className="navbar-nav ms-auto gap-3">
-                        {!isAuthenticated &&
-                            guestUser.map((item) => {
-                                return (
-                                    <li className="nav-item">
-                                        <Link
-                                            className={`nav-link ${location.pathname === item.path && "text-danger"
-                                                }`}
-                                            to={item.path}
-                                        >
-                                            {item.label}
-                                        </Link>
-                                    </li>
-                                );
-                            })}
+                <div className="collapse navbar-collapse" id="navbarNav" ref={collapseRef}>
+                    <ul className="navbar-nav ms-auto mb-2 mb-lg-0 gap-2">
+                        {!isAuthenticated && renderLinks(guestUser)}
                         {isAuthenticated && userType === "client" && (
                             <>
-                                {clientUser.map((item) => {
-                                    return (
-                                        <li className="nav-item">
-                                            <Link
-                                                className={`nav-link ${location.pathname === item.path && "text-danger"
-                                                    }`}
-                                                to={item.path}
-                                            >
-                                                {item.label}
-                                                {item.label === "Cart" && (
-                                                    <span className="bg-danger text-white rounded px-2 py-1 ms-1">
-                                                        {addedItem?.length || 0}
-                                                    </span>
-                                                )}
-                                            </Link>
-                                        </li>
-                                    );
-                                })}
+                                {renderLinks(clientUser)}
                                 <li className="nav-item">
-                                    <button
-                                        className="nav-link btn btn-link"
-                                        onClick={handleLogout}
-                                    >
+                                    <button className="nav-link btn btn-link" onClick={() => { handleLogout(); collapseNavbar(); }}>
                                         Logout
                                     </button>
                                 </li>
@@ -112,24 +99,9 @@ const Navbar = () => {
                         )}
                         {isAuthenticated && userType === "vendor" && (
                             <>
-                                {vendorUser.map((item) => {
-                                    return (
-                                        <li className="nav-item">
-                                            <Link
-                                                className={`nav-link ${location.pathname === item.path && "text-danger"
-                                                    }`}
-                                                to={item.path}
-                                            >
-                                                {item.label}
-                                            </Link>
-                                        </li>
-                                    );
-                                })}
+                                {renderLinks(vendorUser)}
                                 <li className="nav-item">
-                                    <button
-                                        className="nav-link btn btn-link"
-                                        onClick={handleLogout}
-                                    >
+                                    <button className="nav-link btn btn-link" onClick={() => { handleLogout(); collapseNavbar(); }}>
                                         Logout
                                     </button>
                                 </li>
@@ -137,24 +109,9 @@ const Navbar = () => {
                         )}
                         {isAuthenticated && userType === "admin" && (
                             <>
-                                {adminUser.map((item) => {
-                                    return (
-                                        <li className="nav-item">
-                                            <Link
-                                                className={`nav-link ${location.pathname === item.path && "text-danger"
-                                                    }`}
-                                                to={item.path}
-                                            >
-                                                {item.label}
-                                            </Link>
-                                        </li>
-                                    )
-                                })}
+                                {renderLinks(adminUser)}
                                 <li className="nav-item">
-                                    <button
-                                        className="nav-link btn btn-link"
-                                        onClick={handleLogout}
-                                    >
+                                    <button className="nav-link btn btn-link" onClick={() => { handleLogout(); collapseNavbar(); }}>
                                         Logout
                                     </button>
                                 </li>

@@ -195,7 +195,7 @@ const MyRestaurantMenu = () => {
                         {foodsList?.menu?.length ? (
                             foodsList?.menu?.map((food) => {
                                 return (
-                                    <div className="col-md-3 mt-3 card-wrapper">
+                                    <div className="col-lg-3 col-md-6 mt-3 card-wrapper">
                                         <div className="card position-relative">
                                             {food?.imageUrl?.startsWith("https://") ? (
                                                 <img

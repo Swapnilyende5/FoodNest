@@ -29,19 +29,19 @@ const RestaurantMenu = () => {
 
     return (
         <div className='w-75 m-auto mt-5'>
-            <div className='mb-4 d-flex justify-content-between'>
-                <h2 className='fw-bold m-0'>{selectedRes.restaurantName}</h2>
+            <div className='mb-4 d-flex flex-column flex-sm-row justify-content-between'>
+                <h2 className='fw-bold m-0 text-center text-sm-right mb-4 mb-sm-0'>{selectedRes.restaurantName}</h2>
                 <Link className='btn btn-success' to='/feedback' onClick={() => handleFeedback(selectedRes.restaurantId)}>Add Feedback</Link>
             </div>
             <div className='text-center mb-5'>
                 <h6 className='text-muted mb-2'>- Menu -</h6>
-                <input className="search-input w-50" onChange={(e) => setFilterFood(e.target.value)} placeholder="Search" />
+                <input className="search-input w-75" onChange={(e) => setFilterFood(e.target.value)} placeholder="Search" />
             </div>
             {foodList?.map((item, index) => {
                 const { description, imageUrl, title, price, isVeg, rating } = item || {}
                 return <>
-                    <div className='d-flex my-4' key={index}>
-                        <div className="card-body">
+                    <div className='d-flex flex-column flex-sm-row my-4' key={index}>
+                        <div className="card-body me-md-4">
                             <div className='d-flex align-items-center'>
                                 <h4 className="card-title mb-1 text-capitalize">{title}</h4>
                                 {isVeg && <span className="badge bg-success py-1 ms-2">Veg</span>}
@@ -55,7 +55,7 @@ const RestaurantMenu = () => {
                                 {description}
                             </p>
                         </div>
-                        <div className="col-md-4 text-center position-relative" style={{ height: '144px' }}>
+                        <div className="col-md-4 text-center">
                             <img
                                 src={imageUrl && imageUrl}
                                 onError={(e) => {
@@ -66,7 +66,7 @@ const RestaurantMenu = () => {
                                 className="img-fluid rounded mb-2"
                                 style={{ maxHeight: '120px', width: "180px", objectFit: 'cover' }}
                             />
-                            <button className="btn btn-success m-auto d-block w-25 position-absolute" style={{ right: '126px', bottom: '5px' }} onClick={() => addToCart(item, selectedRes.restaurantId)}>ADD</button>
+                            <button className="btn btn-sm btn-success m-auto d-block w-50" onClick={() => addToCart(item, selectedRes.restaurantId)}>ADD</button>
                             <ToastMessage message={`"${addedItemToast.title}" added to the cart`} />
                         </div>
                     </div>

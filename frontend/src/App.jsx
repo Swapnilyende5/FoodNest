@@ -7,7 +7,6 @@ import { RestaurantContext } from "./context/restaurantContext.jsx";
 import { jwtDecode } from "jwt-decode";
 import Home from "./pages/Home/Home.jsx";
 import RestaurantMenu from "./pages/Client/RestaurantMenu.jsx";
-import HomeGuest from "./pages/Auth/HomeGuest.jsx";
 import UserProfile from "./pages/Client/UserProfile.jsx";
 import Cart from "./pages/Client/Cart.jsx";
 import MyOrders from "./pages/Client/MyOrders.jsx";
@@ -18,6 +17,9 @@ import AddFeedback from "./pages/Client/AddFeedback.jsx";
 import Footer from "./components/Footer.jsx";
 import CustomerFeedback from "./pages/Vendor/CustomerFeedback.jsx";
 import PastOrders from "./pages/Vendor/PastOrders.jsx";
+import About from "./components/common/About.jsx";
+import Contact from "./components/common/Contact.jsx";
+import Layout from "./Layout.jsx";
 
 function App() {
   const { isAuthenticated, setIsAuthenticated } = useContext(RestaurantContext);
@@ -56,40 +58,50 @@ function App() {
   return (
     <>
       <Navbar />
-      <Routes>
-        <Route
-          path="/register"
-          element={<Register />}
-        />
-        <Route path="/registerRestaurant" element={<RegisterRestaurant />} />
-        <Route
-          path="/login"
-          element={<Login />}
-        />
-        <Route path="/" element={<Home />} />
-        {isAuthenticated && userType === "client" && (
-          <>
-            <Route path="/restaurant" element={<RestaurantMenu />}>
-              <Route path=":restaurantId" element={<RestaurantMenu />} />
-            </Route>
-            <Route path="/profile" element={<UserProfile />} />
-            <Route path="/cart" element={<Cart />} />
-            <Route path="/orders" element={<MyOrders />} />
-            <Route path="/feedback" element={<AddFeedback />} />
-          </>
-        )}
-        {isAuthenticated && userType === "vendor" && (
-          <>
-            <Route path="/restaurant/profile" element={<RestaurantProfile />} />
-            <Route path="/restaurant" element={<MyRestaurantMenu />}>
-              <Route path=":restaurantId" element={<MyRestaurantMenu />} />
-            </Route>
-            <Route path="/restaurant/feedback" element={<CustomerFeedback />} />
-            <Route path="/restaurant/orders" element={<PastOrders />} />
-            PastOrders
-          </>
-        )}
-      </Routes>
+      <Layout>
+        <Routes>
+          <Route
+            path="/register"
+            element={<Register />}
+          />
+          <Route path="/registerRestaurant" element={<RegisterRestaurant />} />
+          <Route
+            path="/login"
+            element={<Login />}
+          />
+          <Route
+            path="/about"
+            element={<About />}
+          />
+          <Route
+            path="/contact"
+            element={<Contact />}
+          />
+          <Route path="/" element={<Home />} />
+          {isAuthenticated && userType === "client" && (
+            <>
+              <Route path="/restaurant" element={<RestaurantMenu />}>
+                <Route path=":restaurantId" element={<RestaurantMenu />} />
+              </Route>
+              <Route path="/profile" element={<UserProfile />} />
+              <Route path="/cart" element={<Cart />} />
+              <Route path="/orders" element={<MyOrders />} />
+              <Route path="/feedback" element={<AddFeedback />} />
+            </>
+          )}
+          {isAuthenticated && userType === "vendor" && (
+            <>
+              <Route path="/restaurant/profile" element={<RestaurantProfile />} />
+              <Route path="/restaurant" element={<MyRestaurantMenu />}>
+                <Route path=":restaurantId" element={<MyRestaurantMenu />} />
+              </Route>
+              <Route path="/restaurant/feedback" element={<CustomerFeedback />} />
+              <Route path="/restaurant/orders" element={<PastOrders />} />
+              PastOrders
+            </>
+          )}
+        </Routes>
+      </Layout>
       {isAuthenticated && <Footer />}
     </>
   );

@@ -20,18 +20,19 @@ const Footer = () => {
                                 <Link to="/registerRestaurant" className="text-light">Partner with us</Link>
                             </li>
                             <li>
-                                <Link to="/" className="text-light">Contact</Link>
+                                <Link to="/contact" className="text-light">Contact</Link>
                             </li>
                             <li>
-                                <Link href="/" className="text-light">About</Link>
+                                <Link to="/about" className="text-light">About</Link>
                             </li>
                         </ul>
                     </div>
                     <div className="col-md-4 footer-section mb-4">
                         <h3 className="mb-4">Contact Us</h3>
                         <p className="mb-1">Email: support@foodnest.com</p>
-                        <p className="mb-1">Phone: +123-456-7890</p>
-                        <p className="mb-1">Address: 123 Main Street, Delhi, India</p>
+                        <p className="mb-1">Phone: +91 9876543210</p>
+                        <p className="mb-1">Address: 123 Food Street, Flavor Town, India</p>
+                        <p className="mb-1">Working Hours: 9:00 AM – 10:00 PM</p>
                     </div>
                 </div>
             </div>
