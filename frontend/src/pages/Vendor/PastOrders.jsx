@@ -10,7 +10,7 @@ const PastOrders = () => {
     const RestaurantId = localStorage.getItem("RestaurantId");
 
     useEffect(() => {
-        const getUser = async () => {
+        const getPastOrders = async () => {
             try {
                 setIsPastOrdersLoading(true)
                 const restaurantPastOrders = await axiosInstance.get(
@@ -21,11 +21,11 @@ const PastOrders = () => {
             } catch (error) {
                 const errorMsg =
                     error.response?.data?.message ||
-                    "Failed getting user. Please try again.";
-                console.log("getUserError", errorMsg);
+                    "Failed getting past orders. Please try again.";
+                console.log("getPastOrders", errorMsg);
             }
         };
-        getUser();
+        getPastOrders();
     }, [addedItem, subTotal]);
 
     const pastOrderByRestaurant = resPastOrders?.flatMap(
