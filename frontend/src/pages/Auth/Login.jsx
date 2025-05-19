@@ -109,10 +109,10 @@ const Login = () => {
                         style={{ fontSize: "12px" }}
                     >
                         <b style={{ cursor: "pointer" }}>Test Client:</b>{" "}
-                        swapnil@gmail.com//Swapnil@3541
+                        jhondoe@gmail.com//JhonDoe@3541
                     </p>
                     <p className="text-secondary m-0" style={{ fontSize: "12px" }}>
-                        <b>Test Vendor:</b> swapnilcafe@gmail.com//SwapnilCafe@123
+                        <b>Test Vendor:</b> foodsaysbest@gmail.com//FoodSaysBest@3541
                     </p>
                 </>
             )}

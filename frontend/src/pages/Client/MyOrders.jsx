@@ -4,15 +4,18 @@ import Loader from "../../components/utils/Loader";
 import { RestaurantContext } from "../../context/restaurantContext";
 
 const MyOrders = () => {
-    const { userDetails } = useContext(RestaurantContext)
+    const { userDetails } = useContext(RestaurantContext);
     const [orders, setOrders] = useState([]);
     const [deliveryStatus, setDeliveryStatus] = useState("Preparing");
+    const [isMyOrdersLoading, setIsMyOrdersLoading] = useState(false);
 
     useEffect(() => {
         const getRecentOrders = async () => {
             try {
+                setIsMyOrdersLoading(true);
                 const res = await axiosInstance.get("/order/getRecentOrders");
                 setOrders(res.data.recentOrders);
+                setIsMyOrdersLoading(false);
             } catch (error) {
                 const errorMsg =
                     error.response?.data?.message ||
@@ -21,14 +24,15 @@ const MyOrders = () => {
             }
         };
         getRecentOrders();
-
     }, []);
 
     setTimeout(() => {
         setDeliveryStatus("Delivered");
     }, 60000);
 
-    const ordersByCurrentUser = orders.find((item) => item.userId === userDetails._id)
+    const ordersByCurrentUser = orders.find(
+        (item) => item.userId === userDetails._id
+    );
 
     const recentOrderCard = (item, index) => {
         const { items, orderId, total, date } = item;
@@ -72,10 +76,15 @@ const MyOrders = () => {
                             <p className="mb-1">
                                 <strong>Delivery To:</strong>
                             </p>
-                            <p className="mb-0">{userDetails.userName && userDetails?.userName}</p>
-                            <p className="mb-0">{userDetails.address && userDetails?.address[0]}</p>
                             <p className="mb-0">
-                                <i className="bi bi-telephone" /> {userDetails.phone && userDetails.phone}
+                                {userDetails.userName && userDetails?.userName}
+                            </p>
+                            <p className="mb-0">
+                                {userDetails.address && userDetails?.address[0]}
+                            </p>
+                            <p className="mb-0">
+                                <i className="bi bi-telephone" />{" "}
+                                {userDetails.phone && userDetails.phone}
                             </p>
                         </div>
                     </div>
@@ -92,9 +101,15 @@ const MyOrders = () => {
     return (
         <div className="container my-5">
             <h2 className="mb-4">Recent Orders</h2>
-            {!ordersByCurrentUser ? <Loader /> : ordersByCurrentUser?.orders?.map((item, index) => {
-                return recentOrderCard(item, index);
-            })}
+            {isMyOrdersLoading ? (
+                <Loader />
+            ) : ordersByCurrentUser ? (
+                ordersByCurrentUser?.orders?.map((item, index) => {
+                    return recentOrderCard(item, index);
+                })
+            ) : (
+                <div className="alert alert-info">No past orders available.</div>
+            )}
         </div>
     );
 };

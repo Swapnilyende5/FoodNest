@@ -4,6 +4,7 @@ import axiosInstance from "../../axiosInstance";
 export const RestaurantContext = createContext(null);
 
 const RestaurantContextProvider = ({ children }) => {
+    const userType = localStorage.getItem("usertype");
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [selectedRes, setSelectedRes] = useState({});
     const [addedItem, setAddedItem] = useState(() => {
@@ -18,7 +19,7 @@ const RestaurantContextProvider = ({ children }) => {
 
     useEffect(() => {
         const getUserData = async () => {
-            if (!token) {
+            if (!token || userType !== "client") {
                 setUserDetails({});
                 return;
             }
